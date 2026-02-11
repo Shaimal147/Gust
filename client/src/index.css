@@ -7,11 +7,12 @@
 html, body, #root {
     width: 100%;
     min-height: 100%;
-    color: gold;
+    color: hsl(0, 0%, 100%);
+    font-family: "Bricolage Grotesque", sans-serif;
 }
 
 #root {
-    background-color: hsl(248, 70%, 36%);
+    background-color: hsl(243, 96%, 9%);
     padding-left: 1rem;
     padding-right: 1rem;
 }
