@@ -1,3 +1,5 @@
+import UnitOption from "../components/UnitOption";
+import { useState } from "react";
 import styles from "./HomePage.module.css";
 import gustLogo from "/images/gust-logo.png";
 import gearIcon from "/images/icon-units.svg";
@@ -7,8 +9,27 @@ import rainIcon from "../assets/icon-rain.webp";
 import overcastIcon from "../assets/icon-overcast.webp";
 
 function HomePage() {
+  const [isMetric, setIsMetric] = useState(true);
+  const units = isMetric
+    ? {
+        temperature: "celsius",
+        speed: "km/h",
+        height: "mm",
+      }
+    : {
+        temperature: "fahrenheit",
+        speed: "mph",
+        height: "in",
+      };
+  const dropdownSelect = "/images/icon-checkmark.svg";
+
+  function toggleUnits() {
+    setIsMetric((prev) => !prev);
+  }
+
   return (
     <>
+      {/* Header section */}
       <div className="container">
         <div className="row">
           <div className="col-6">
@@ -28,37 +49,78 @@ function HomePage() {
                 >
                   <img src={gearIcon} alt="unit settings icon" /> Units
                 </button>
-                <ul className={`dropdown-menu ${styles.dropdownContainer} mt-1 p-2`}>
-                    <li>
-                        <button className={`btn ${styles.button1} btn-sm w-100 text-start`}>Switch to Imperial</button>
-                    </li>
-                    <li>
-                        <p className="px-2 mb-0 mt-2" style={{fontSize: "small"}}>Temperature</p>
-                    </li>
-                    <li>
-                        <button className={`btn ${styles.button1} btn-sm w-100 text-start`}>Celsius ( <sup>°</sup>C )</button>
-                    </li>
-                     <li style={{borderBottom: "solid 1px hsl(243, 23%, 30%)"}}>
-                        <button className={`btn ${styles.button1} btn-sm w-100 text-start`}>Farenheit ( <sup>°</sup>F )</button>
-                    </li>
-                    <li>
-                        <p className="px-2 mb-0 mt-2" style={{fontSize: "small"}}>Wind Speed</p>
-                    </li>
-                    <li>
-                        <button className={`btn ${styles.button1} btn-sm w-100 text-start`}>km/h</button>
-                    </li>
-                    <li style={{borderBottom: "solid 1px hsl(243, 23%, 30%)"}}>
-                        <button className={`btn ${styles.button1} btn-sm w-100 text-start`}>mph</button>
-                    </li>
-                    <li>
-                        <p className="px-2 mb-0 mt-2" style={{fontSize: "small"}}>Precipitation</p>
-                    </li>
-                    <li>
-                        <button className={`btn ${styles.button1} btn-sm w-100 text-start`}>Millimeters (mm)</button>
-                    </li>
-                    <li>
-                        <button className={`btn ${styles.button1} btn-sm w-100 text-start`}>Inches (in)</button>
-                    </li>
+                <ul
+                  className={`dropdown-menu ${styles.dropdownContainer} mt-1 p-2`}
+                >
+                  <li>
+                    <button
+                      className={`btn ${styles.button1} btn-sm w-100 text-start`}
+                      onClick={toggleUnits}
+                    >
+                      {isMetric ? "Switch to Imperial" : "Switch to Metric"}
+                    </button>
+                  </li>
+                  <li>
+                    <p className="px-2 mb-0 mt-2" style={{ fontSize: "small" }}>
+                      Temperature
+                    </p>
+                  </li>
+                    <UnitOption
+                      label={
+                        <>
+                          Celsius ( <sup>°</sup>C )
+                        </>
+                      }
+                      selected={isMetric}
+                      onClick={() => setIsMetric(true)}
+                      iconSrc={dropdownSelect}
+                    />
+                    <UnitOption
+                      label={
+                        <>
+                          Fahrenheit ( <sup>°</sup>F )
+                        </>
+                      }
+                      selected={!isMetric}
+                      onClick={() => setIsMetric(false)}
+                      iconSrc={dropdownSelect}
+                      divider
+                    />
+                  <li>
+                    <p className="px-2 mb-0 mt-2" style={{ fontSize: "small" }}>
+                      Wind Speed
+                    </p>
+                  </li>
+                    <UnitOption
+                      label={"km/h"}
+                      selected={isMetric}
+                      onClick={() => setIsMetric(true)}
+                      iconSrc={dropdownSelect}
+                    />
+                    <UnitOption
+                      label={"mph"}
+                      selected={!isMetric}
+                      onClick={() => setIsMetric(false)}
+                      iconSrc={dropdownSelect}
+                      divider
+                    />
+                  <li>
+                    <p className="px-2 mb-0 mt-2" style={{ fontSize: "small" }}>
+                      Precipitation
+                    </p>
+                  </li>
+                    <UnitOption
+                      label={"mm"}
+                      selected={isMetric}
+                      onClick={() => setIsMetric(true)}
+                      iconSrc={dropdownSelect}
+                    />
+                    <UnitOption
+                      label={"in"}
+                      selected={!isMetric}
+                      onClick={() => setIsMetric(false)}
+                      iconSrc={dropdownSelect}
+                    />
                 </ul>
               </div>
             </div>
@@ -66,6 +128,7 @@ function HomePage() {
         </div>
       </div>
 
+      {/* Hero section */}
       <div className="container">
         <div className="row">
           <div className="col-12">
@@ -105,264 +168,288 @@ function HomePage() {
       </div>
 
       <div className="container mt-3 mt-lg-5">
-        <div className="row g-4 align-items-start">
+        <div className="row g-4 align-items-stretch">
           <div className="col-12 col-lg-8">
-            <div className="mt-0">
-              <div className="row">
+            <div className="d-flex flex-column h-100">
+              <div className="mt-0">
+                <div className="row">
+                  <div className="col-12">
+                    <div
+                      className={`d-flex flex-column flex-lg-row align-items-center justify-content-center justify-content-lg-between ${styles.overview} ${styles.overviewWidth} px-lg-3 py-lg-5`}
+                    >
+                      <div>
+                        <p className={`${styles["overview-title"]}`}>
+                          Berlin, Germany
+                        </p>
+                        <p className={`${styles["overview-text"]}`}>
+                          Thursday, February 12, 2026
+                        </p>
+                      </div>
+                      <div className="d-flex align-items-center gap-4">
+                        <img src={sunnyIcon} alt="sunny icon" width={80} />
+                        <p className="mb-0">
+                          {units.temperature}
+                          <sup>°</sup>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="mt-3 mt-lg-5">
+                <div className={`row g-4 ${styles.overviewWidth}`}>
+                  <div className="col-6 col-lg-3">
+                    <div
+                      className={`card  ${styles["overview-details"]} w-100 h-100`}
+                    >
+                      <div className="card-body">
+                        <p className="card-text">Feels like</p>
+                        <h5 className="card-title">
+                          {units.temperature}
+                          <sup>°</sup>
+                        </h5>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="col-6 col-lg-3">
+                    <div
+                      className={`card  ${styles["overview-details"]} w-100 h-100`}
+                    >
+                      <div className="card-body">
+                        <p className="card-text">Humidity</p>
+                        <h5 className="card-title">46%</h5>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="col-6 col-lg-3">
+                    <div
+                      className={`card  ${styles["overview-details"]} w-100 h-100`}
+                    >
+                      <div className="card-body">
+                        <p className="card-text">Wind</p>
+                        <h5 className="card-title">{units.speed}</h5>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="col-6 col-lg-3">
+                    <div
+                      className={`card  ${styles["overview-details"]} w-100 h-100`}
+                    >
+                      <div className="card-body">
+                        <p
+                          className="card-text text-nowrap"
+                          style={{ fontSize: "small" }}
+                        >
+                          Precipitation
+                        </p>
+                        <h5 className="card-title">{units.height}</h5>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="mt-3 mt-lg-4">
                 <div className="col-12">
+                  <div className="">Daily forecast</div>
+                </div>
+              </div>
+              <div
+                className={`row g-3 mt-1 mt-lg-4 ${styles.forecastRow} ${styles.overviewWidth}`}
+              >
+                <div className="col-4 col-lg">
                   <div
-                    className={`d-flex flex-column flex-lg-row align-items-center justify-content-center justify-content-lg-between ${styles.overview} ${styles.overviewWidth} px-lg-3 py-lg-5`}
+                    className={`card  ${styles["overview-details"]} h-100 w-100`}
                   >
-                    <div>
-                      <p className={`${styles["overview-title"]}`}>
-                        Berlin, Germany
-                      </p>
-                      <p className={`${styles["overview-text"]}`}>
-                        Thursday, February 12, 2026
-                      </p>
-                    </div>
-                    <div className="d-flex align-items-center gap-4">
-                      <img src={sunnyIcon} alt="sunny icon" width={80} />
-                      <p className="mb-0">
-                        20<sup>°</sup>
-                      </p>
+                    <div className="card-body d-flex flex-column justify-content-start align-items-center h-100 w-100 py-1 px-0">
+                      <div className="d-flex flex-column align-items-center">
+                        <p
+                          className="card-text m-0"
+                          style={{ fontSize: "small" }}
+                        >
+                          Tue
+                        </p>
+                        <img src={rainIcon} alt="rain icon" width={50} />
+                      </div>
+                      <div className="d-flex justify-content-between w-100 px-1">
+                        <p className="mb-0">
+                          {units.temperature}
+                          <sup>°</sup>
+                        </p>
+                        <p className="mb-0">
+                          {units.temperature}
+                          <sup>°</sup>
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
-
-            <div className="mt-3 mt-lg-5">
-              <div className={`row g-4 ${styles.overviewWidth}`}>
-                <div className="col-6 col-lg-3">
+                <div className="col-4 col-lg">
                   <div
-                    className={`card  ${styles["overview-details"]} w-100 h-100`}
+                    className={`card  ${styles["overview-details"]} h-100 w-100`}
                   >
-                    <div className="card-body">
-                      <p className="card-text">Feels like</p>
-                      <h5 className="card-title">
-                        18<sup>°</sup>
-                      </h5>
+                    <div className="card-body d-flex flex-column justify-content-start align-items-center h-100 w-100 py-1 px-0">
+                      <div className="d-flex flex-column align-items-center">
+                        <p
+                          className="card-text m-0"
+                          style={{ fontSize: "small" }}
+                        >
+                          Wed
+                        </p>
+                        <img
+                          src={overcastIcon}
+                          alt="overcast icon"
+                          width={50}
+                        />
+                      </div>
+                      <div className="d-flex justify-content-between w-100 px-1">
+                        <p className="mb-0">
+                          {units.temperature}
+                          <sup>°</sup>
+                        </p>
+                        <p className="mb-0">
+                          {units.temperature}
+                          <sup>°</sup>
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
-                <div className="col-6 col-lg-3">
+                <div className="col-4 col-lg">
                   <div
-                    className={`card  ${styles["overview-details"]} w-100 h-100`}
+                    className={`card  ${styles["overview-details"]} h-100 w-100`}
                   >
-                    <div className="card-body">
-                      <p className="card-text">Humidity</p>
-                      <h5 className="card-title">46%</h5>
+                    <div className="card-body d-flex flex-column justify-content-start align-items-center h-100 w-100 py-1 px-0">
+                      <div className="d-flex flex-column align-items-center">
+                        <p
+                          className="card-text m-0"
+                          style={{ fontSize: "small" }}
+                        >
+                          Thu
+                        </p>
+                        <img
+                          src={overcastIcon}
+                          alt="overcast icon"
+                          width={50}
+                        />
+                      </div>
+                      <div className="d-flex justify-content-between w-100 px-1">
+                        <p className="mb-0">
+                          {units.temperature}
+                          <sup>°</sup>
+                        </p>
+                        <p className="mb-0">
+                          {units.temperature}
+                          <sup>°</sup>
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
-                <div className="col-6 col-lg-3">
+                <div className="col-4 col-lg">
                   <div
-                    className={`card  ${styles["overview-details"]} w-100 h-100`}
+                    className={`card  ${styles["overview-details"]} h-100 w-100`}
                   >
-                    <div className="card-body">
-                      <p className="card-text">Wind</p>
-                      <h5 className="card-title">14 km/h</h5>
+                    <div className="card-body d-flex flex-column justify-content-start align-items-center h-100 w-100 py-1 px-0">
+                      <div className="d-flex flex-column align-items-center">
+                        <p
+                          className="card-text m-0"
+                          style={{ fontSize: "small" }}
+                        >
+                          Fri
+                        </p>
+                        <img src={rainIcon} alt="rain icon" width={50} />
+                      </div>
+                      <div className="d-flex justify-content-between w-100 px-1">
+                        <p className="mb-0">
+                          {units.temperature}
+                          <sup>°</sup>
+                        </p>
+                        <p className="mb-0">
+                          {units.temperature}
+                          <sup>°</sup>
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
-                <div className="col-6 col-lg-3">
+                <div className="col-4 col-lg">
                   <div
-                    className={`card  ${styles["overview-details"]} w-100 h-100`}
+                    className={`card  ${styles["overview-details"]} h-100 w-100`}
                   >
-                    <div className="card-body">
-                      <p
-                        className="card-text text-nowrap"
-                        style={{ fontSize: "small" }}
-                      >
-                        Precipitation
-                      </p>
-                      <h5 className="card-title">0 mm</h5>
+                    <div className="card-body d-flex flex-column justify-content-start align-items-center h-100 w-100 py-1 px-0">
+                      <div className="d-flex flex-column align-items-center">
+                        <p
+                          className="card-text m-0"
+                          style={{ fontSize: "small" }}
+                        >
+                          Sat
+                        </p>
+                        <img src={rainIcon} alt="rain icon" width={50} />
+                      </div>
+                      <div className="d-flex justify-content-between w-100 px-1">
+                        <p className="mb-0">
+                          {units.temperature}
+                          <sup>°</sup>
+                        </p>
+                        <p className="mb-0">
+                          {units.temperature}
+                          <sup>°</sup>
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
-
-            <div className="mt-3 mt-lg-5">
-              <div className="col-12">
-                <div className="">Daily forecast</div>
-              </div>
-            </div>
-            <div
-              className={`row g-3 mt-1 mt-lg-5 ${styles.forecastRow} ${styles.overviewWidth}`}
-            >
-              <div className="col-4 col-lg">
-                <div
-                  className={`card  ${styles["overview-details"]} h-100 w-100`}
-                >
-                  <div className="card-body d-flex flex-column justify-content-start align-items-center h-100 w-100 py-1 px-0">
-                    <div className="d-flex flex-column align-items-center">
-                      <p
-                        className="card-text m-0"
-                        style={{ fontSize: "small" }}
-                      >
-                        Tue
-                      </p>
-                      <img src={rainIcon} alt="rain icon" width={50} />
-                    </div>
-                    <div className="d-flex justify-content-between w-100 px-1">
-                      <p className="mb-0">
-                        20<sup>°</sup>
-                      </p>
-                      <p className="mb-0">
-                        14<sup>°</sup>
-                      </p>
+                <div className="col-4 col-lg">
+                  <div
+                    className={`card  ${styles["overview-details"]} h-100 w-100`}
+                  >
+                    <div className="card-body d-flex flex-column justify-content-start align-items-center h-100 w-100 py-1 px-0">
+                      <div className="d-flex flex-column align-items-center">
+                        <p
+                          className="card-text m-0"
+                          style={{ fontSize: "small" }}
+                        >
+                          Sun
+                        </p>
+                        <img src={rainIcon} alt="rain icon" width={50} />
+                      </div>
+                      <div className="d-flex justify-content-between w-100 px-1">
+                        <p className="mb-0">
+                          {units.temperature}
+                          <sup>°</sup>
+                        </p>
+                        <p className="mb-0">
+                          {units.temperature}
+                          <sup>°</sup>
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-              <div className="col-4 col-lg">
-                <div
-                  className={`card  ${styles["overview-details"]} h-100 w-100`}
-                >
-                  <div className="card-body d-flex flex-column justify-content-start align-items-center h-100 w-100 py-1 px-0">
-                    <div className="d-flex flex-column align-items-center">
-                      <p
-                        className="card-text m-0"
-                        style={{ fontSize: "small" }}
-                      >
-                        Wed
-                      </p>
-                      <img src={overcastIcon} alt="overcast icon" width={50} />
-                    </div>
-                    <div className="d-flex justify-content-between w-100 px-1">
-                      <p className="mb-0">
-                        20<sup>°</sup>
-                      </p>
-                      <p className="mb-0">
-                        14<sup>°</sup>
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="col-4 col-lg">
-                <div
-                  className={`card  ${styles["overview-details"]} h-100 w-100`}
-                >
-                  <div className="card-body d-flex flex-column justify-content-start align-items-center h-100 w-100 py-1 px-0">
-                    <div className="d-flex flex-column align-items-center">
-                      <p
-                        className="card-text m-0"
-                        style={{ fontSize: "small" }}
-                      >
-                        Thu
-                      </p>
-                      <img src={overcastIcon} alt="overcast icon" width={50} />
-                    </div>
-                    <div className="d-flex justify-content-between w-100 px-1">
-                      <p className="mb-0">
-                        20<sup>°</sup>
-                      </p>
-                      <p className="mb-0">
-                        14<sup>°</sup>
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="col-4 col-lg">
-                <div
-                  className={`card  ${styles["overview-details"]} h-100 w-100`}
-                >
-                  <div className="card-body d-flex flex-column justify-content-start align-items-center h-100 w-100 py-1 px-0">
-                    <div className="d-flex flex-column align-items-center">
-                      <p
-                        className="card-text m-0"
-                        style={{ fontSize: "small" }}
-                      >
-                        Fri
-                      </p>
-                      <img src={rainIcon} alt="rain icon" width={50} />
-                    </div>
-                    <div className="d-flex justify-content-between w-100 px-1">
-                      <p className="mb-0">
-                        20<sup>°</sup>
-                      </p>
-                      <p className="mb-0">
-                        14<sup>°</sup>
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="col-4 col-lg">
-                <div
-                  className={`card  ${styles["overview-details"]} h-100 w-100`}
-                >
-                  <div className="card-body d-flex flex-column justify-content-start align-items-center h-100 w-100 py-1 px-0">
-                    <div className="d-flex flex-column align-items-center">
-                      <p
-                        className="card-text m-0"
-                        style={{ fontSize: "small" }}
-                      >
-                        Sat
-                      </p>
-                      <img src={rainIcon} alt="rain icon" width={50} />
-                    </div>
-                    <div className="d-flex justify-content-between w-100 px-1">
-                      <p className="mb-0">
-                        20<sup>°</sup>
-                      </p>
-                      <p className="mb-0">
-                        14<sup>°</sup>
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="col-4 col-lg">
-                <div
-                  className={`card  ${styles["overview-details"]} h-100 w-100`}
-                >
-                  <div className="card-body d-flex flex-column justify-content-start align-items-center h-100 w-100 py-1 px-0">
-                    <div className="d-flex flex-column align-items-center">
-                      <p
-                        className="card-text m-0"
-                        style={{ fontSize: "small" }}
-                      >
-                        Sun
-                      </p>
-                      <img src={rainIcon} alt="rain icon" width={50} />
-                    </div>
-                    <div className="d-flex justify-content-between w-100 px-1">
-                      <p className="mb-0">
-                        20<sup>°</sup>
-                      </p>
-                      <p className="mb-0">
-                        14<sup>°</sup>
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="col-4 col-lg">
-                <div
-                  className={`card  ${styles["overview-details"]} h-100 w-100`}
-                >
-                  <div className="card-body d-flex flex-column justify-content-start align-items-center h-100 w-100 py-1 px-0">
-                    <div className="d-flex flex-column align-items-center">
-                      <p
-                        className="card-text m-0"
-                        style={{ fontSize: "small" }}
-                      >
-                        Mon
-                      </p>
-                      <img src={rainIcon} alt="rain icon" width={50} />
-                    </div>
-                    <div className="d-flex justify-content-between w-100 px-1">
-                      <p className="mb-0">
-                        20<sup>°</sup>
-                      </p>
-                      <p className="mb-0">
-                        14<sup>°</sup>
-                      </p>
+                <div className="col-4 col-lg">
+                  <div
+                    className={`card  ${styles["overview-details"]} h-100 w-100`}
+                  >
+                    <div className="card-body d-flex flex-column justify-content-start align-items-center h-100 w-100 py-1 px-0">
+                      <div className="d-flex flex-column align-items-center">
+                        <p
+                          className="card-text m-0"
+                          style={{ fontSize: "small" }}
+                        >
+                          Mon
+                        </p>
+                        <img src={rainIcon} alt="rain icon" width={50} />
+                      </div>
+                      <div className="d-flex justify-content-between w-100 px-1">
+                        <p className="mb-0">
+                          {units.temperature}
+                          <sup>°</sup>
+                        </p>
+                        <p className="mb-0">
+                          {units.temperature}
+                          <sup>°</sup>
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -370,175 +457,164 @@ function HomePage() {
             </div>
           </div>
 
-        <div className="col-12 col-lg-4">
-          <div className={styles.hourlySidebar}>
-            <div className="row">
-              <div className="col-12">
-                <div
-                  className={`card  ${styles["hourly-details"]} w-100`}
-                   
-                >
-                  <div className="card-body d-flex align-items-center justify-content-between">
-                    <p className={`${styles["hourly-details"]} mb-0`}>
-                      Hourly forecast
-                    </p>
-                    <div className="btn-group">
-                      <button
-                        className={`btn ${styles.button3} btn-sm dropdown-toggle`}
-                        type="button"
-                        data-bs-toggle="dropdown"
-                        aria-expanded="false"
+          <div className="col-12 col-lg-4">
+            <div className={styles.hourlySidebar}>
+              <div className="row">
+                <div className="col-12">
+                  <div className={`card  ${styles["hourly-details"]} w-100`}>
+                    <div className="card-body d-flex align-items-center justify-content-between">
+                      <p className={`${styles["hourly-details"]} mb-0`}>
+                        Hourly forecast
+                      </p>
+                      <div className="btn-group">
+                        <button
+                          className={`btn ${styles.button3} btn-sm dropdown-toggle`}
+                          type="button"
+                          data-bs-toggle="dropdown"
+                          aria-expanded="false"
+                        >
+                          Tuesday
+                        </button>
+                        <ul className="dropdown-menu">...</ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-12">
+                  <div
+                    className={`card  ${styles["overview-details"]} mt-3 w-100`}
+                  >
+                    <div className="card-body">
+                      <div
+                        className={`${styles["hourly-details-2"]} d-flex align-items-center justify-content-between`}
                       >
-                        Tuesday
-                      </button>
-                      <ul className="dropdown-menu">...</ul>
+                        <div className="d-flex align-items-center">
+                          <img src={sunnyIcon} alt="sunny icon" width={50} />
+                          <p className="card-text m-0">3 PM</p>
+                        </div>
+                        <p className="m-0">
+                          {units.temperature}
+                          <sup>°</sup>
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-              <div className="col-12">
-                <div
-                  className={`card  ${styles["overview-details"]} mt-3 w-100`}
-                   
-                >
-                  <div className="card-body">
-                    <div
-                      className={`${styles["hourly-details-2"]} d-flex align-items-center justify-content-between`}
-                       
-                    >
-                      <div className="d-flex align-items-center">
-                        <img src={sunnyIcon} alt="sunny icon" width={50} />
-                        <p className="card-text m-0">3 PM</p>
+                <div className="col-12">
+                  <div className={`card  ${styles["overview-details"]} mt-3`}>
+                    <div className="card-body">
+                      <div
+                        className={`${styles["hourly-details-2"]} d-flex align-items-center justify-content-between`}
+                      >
+                        <div className="d-flex align-items-center">
+                          <img src={sunnyIcon} alt="sunny icon" width={50} />
+                          <p className="card-text m-0">3 PM</p>
+                        </div>
+                        <p className="m-0">
+                          {units.temperature}
+                          <sup>°</sup>
+                        </p>
                       </div>
-                      <p className="m-0">
-                        20<sup>°</sup>
-                      </p>
                     </div>
                   </div>
                 </div>
-              </div>
-              <div className="col-12">
-                <div
-                  className={`card  ${styles["overview-details"]} mt-3`}
-                   
-                >
-                  <div className="card-body">
-                    <div
-                      className={`${styles["hourly-details-2"]} d-flex align-items-center justify-content-between`}
-                       
-                    >
-                      <div className="d-flex align-items-center">
-                        <img src={sunnyIcon} alt="sunny icon" width={50} />
-                        <p className="card-text m-0">3 PM</p>
+                <div className="col-12">
+                  <div
+                    className={`card  ${styles["overview-details"]} mt-3 w-100`}
+                  >
+                    <div className="card-body">
+                      <div
+                        className={`${styles["hourly-details-2"]} d-flex align-items-center justify-content-between`}
+                      >
+                        <div className="d-flex align-items-center">
+                          <img src={sunnyIcon} alt="sunny icon" width={50} />
+                          <p className="card-text m-0">3 PM</p>
+                        </div>
+                        <p className="m-0">
+                          {units.temperature}
+                          <sup>°</sup>
+                        </p>
                       </div>
-                      <p className="m-0">
-                        20<sup>°</sup>
-                      </p>
                     </div>
                   </div>
                 </div>
-              </div>
-              <div className="col-12">
-                <div
-                  className={`card  ${styles["overview-details"]} mt-3 w-100`}
-                   
-                >
-                  <div className="card-body">
-                    <div
-                      className={`${styles["hourly-details-2"]} d-flex align-items-center justify-content-between`}
-                       
-                    >
-                      <div className="d-flex align-items-center">
-                        <img src={sunnyIcon} alt="sunny icon" width={50} />
-                        <p className="card-text m-0">3 PM</p>
+                <div className="col-12">
+                  <div
+                    className={`card  ${styles["overview-details"]} mt-3 w-100`}
+                  >
+                    <div className="card-body">
+                      <div
+                        className={`${styles["hourly-details-2"]} d-flex align-items-center justify-content-between`}
+                      >
+                        <div className="d-flex align-items-center">
+                          <img src={sunnyIcon} alt="sunny icon" width={50} />
+                          <p className="card-text m-0">3 PM</p>
+                        </div>
+                        <p className="m-0">
+                          {units.temperature}
+                          <sup>°</sup>
+                        </p>
                       </div>
-                      <p className="m-0">
-                        20<sup>°</sup>
-                      </p>
                     </div>
                   </div>
                 </div>
-              </div>
-              <div className="col-12">
-                <div
-                  className={`card  ${styles["overview-details"]} mt-3 w-100`}
-                   
-                >
-                  <div className="card-body">
-                    <div
-                      className={`${styles["hourly-details-2"]} d-flex align-items-center justify-content-between`}
-                       
-                    >
-                      <div className="d-flex align-items-center">
-                        <img src={sunnyIcon} alt="sunny icon" width={50} />
-                        <p className="card-text m-0">3 PM</p>
+                <div className="col-12">
+                  <div
+                    className={`card  ${styles["overview-details"]} mt-3 w-100`}
+                  >
+                    <div className="card-body">
+                      <div
+                        className={`${styles["hourly-details-2"]} d-flex align-items-center justify-content-between`}
+                      >
+                        <div className="d-flex align-items-center">
+                          <img src={sunnyIcon} alt="sunny icon" width={50} />
+                          <p className="card-text m-0">3 PM</p>
+                        </div>
+                        <p className="m-0">
+                          {units.temperature}
+                          <sup>°</sup>
+                        </p>
                       </div>
-                      <p className="m-0">
-                        20<sup>°</sup>
-                      </p>
                     </div>
                   </div>
                 </div>
-              </div>
-              <div className="col-12">
-                <div
-                  className={`card  ${styles["overview-details"]} mt-3 w-100`}
-                   
-                >
-                  <div className="card-body">
-                    <div
-                      className={`${styles["hourly-details-2"]} d-flex align-items-center justify-content-between`}
-                       
-                    >
-                      <div className="d-flex align-items-center">
-                        <img src={sunnyIcon} alt="sunny icon" width={50} />
-                        <p className="card-text m-0">3 PM</p>
+                <div className="col-12">
+                  <div
+                    className={`card  ${styles["overview-details"]} mt-3 w-100`}
+                  >
+                    <div className="card-body">
+                      <div
+                        className={`${styles["hourly-details-2"]} d-flex align-items-center justify-content-between`}
+                      >
+                        <div className="d-flex align-items-center">
+                          <img src={sunnyIcon} alt="sunny icon" width={50} />
+                          <p className="card-text m-0">3 PM</p>
+                        </div>
+                        <p className="m-0">
+                          {units.temperature}
+                          <sup>°</sup>
+                        </p>
                       </div>
-                      <p className="m-0">
-                        20<sup>°</sup>
-                      </p>
                     </div>
                   </div>
                 </div>
-              </div>
-              <div className="col-12">
-                <div
-                  className={`card  ${styles["overview-details"]} mt-3 w-100`}
-                   
-                >
-                  <div className="card-body">
-                    <div
-                      className={`${styles["hourly-details-2"]} d-flex align-items-center justify-content-between`}
-                       
-                    >
-                      <div className="d-flex align-items-center">
-                        <img src={sunnyIcon} alt="sunny icon" width={50} />
-                        <p className="card-text m-0">3 PM</p>
+                <div className="col-12">
+                  <div
+                    className={`card  ${styles["overview-details"]} mt-3 mb-3 w-100`}
+                  >
+                    <div className="card-body">
+                      <div
+                        className={`${styles["hourly-details-2"]} d-flex align-items-center justify-content-between`}
+                      >
+                        <div className="d-flex align-items-center">
+                          <img src={sunnyIcon} alt="sunny icon" width={50} />
+                          <p className="card-text m-0">3 PM</p>
+                        </div>
+                        <p className="m-0">
+                          {units.temperature}
+                          <sup>°</sup>
+                        </p>
                       </div>
-                      <p className="m-0">
-                        20<sup>°</sup>
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="col-12">
-                <div
-                  className={`card  ${styles["overview-details"]} mt-3 mb-3 w-100`}
-                   
-                >
-                  <div className="card-body">
-                    <div
-                      className={`${styles["hourly-details-2"]} d-flex align-items-center justify-content-between`}
-                       
-                    >
-                      <div className="d-flex align-items-center">
-                        <img src={sunnyIcon} alt="sunny icon" width={50} />
-                        <p className="card-text m-0">3 PM</p>
-                      </div>
-                      <p className="m-0">
-                        20<sup>°</sup>
-                      </p>
                     </div>
                   </div>
                 </div>
@@ -546,7 +622,6 @@ function HomePage() {
             </div>
           </div>
         </div>
-      </div>
       </div>
     </>
   );

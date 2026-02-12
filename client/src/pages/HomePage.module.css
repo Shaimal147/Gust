@@ -8,7 +8,8 @@
 }
 
 .button1:hover,
-.button1:focus {
+.button1:focus,
+.active {
   background-color: hsl(243, 23%, 24%);
   border-color: hsl(243, 23%, 24%);
 }
@@ -80,12 +81,10 @@
 @media (min-width: 992px) {
   .overviewWidth {
     width: 100%;
-
+  }
   .hourlySidebar {
     position: sticky;
     top: 2rem;
-  }
-    
   }
 
    .overviewDetailsWidth {
@@ -160,4 +159,8 @@
   border-color: hsl(243, 27%, 20%);
   color: hsl(250, 6%, 84%);
   font-family: "Bricolage Grotesque", sans-serif;
+}
+
+.divider {
+  border-bottom: solid 1px hsl(243, 23%, 30%);
 }
