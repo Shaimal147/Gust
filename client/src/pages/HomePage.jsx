@@ -28,7 +28,38 @@ function HomePage() {
                 >
                   <img src={gearIcon} alt="unit settings icon" /> Units
                 </button>
-                <ul className="dropdown-menu">...</ul>
+                <ul className={`dropdown-menu ${styles.dropdownContainer} mt-1 p-2`}>
+                    <li>
+                        <button className={`btn ${styles.button1} btn-sm w-100 text-start`}>Switch to Imperial</button>
+                    </li>
+                    <li>
+                        <p className="px-2 mb-0 mt-2" style={{fontSize: "small"}}>Temperature</p>
+                    </li>
+                    <li>
+                        <button className={`btn ${styles.button1} btn-sm w-100 text-start`}>Celsius ( <sup>°</sup>C )</button>
+                    </li>
+                     <li style={{borderBottom: "solid 1px hsl(243, 23%, 30%)"}}>
+                        <button className={`btn ${styles.button1} btn-sm w-100 text-start`}>Farenheit ( <sup>°</sup>F )</button>
+                    </li>
+                    <li>
+                        <p className="px-2 mb-0 mt-2" style={{fontSize: "small"}}>Wind Speed</p>
+                    </li>
+                    <li>
+                        <button className={`btn ${styles.button1} btn-sm w-100 text-start`}>km/h</button>
+                    </li>
+                    <li style={{borderBottom: "solid 1px hsl(243, 23%, 30%)"}}>
+                        <button className={`btn ${styles.button1} btn-sm w-100 text-start`}>mph</button>
+                    </li>
+                    <li>
+                        <p className="px-2 mb-0 mt-2" style={{fontSize: "small"}}>Precipitation</p>
+                    </li>
+                    <li>
+                        <button className={`btn ${styles.button1} btn-sm w-100 text-start`}>Millimeters (mm)</button>
+                    </li>
+                    <li>
+                        <button className={`btn ${styles.button1} btn-sm w-100 text-start`}>Inches (in)</button>
+                    </li>
+                </ul>
               </div>
             </div>
           </div>
