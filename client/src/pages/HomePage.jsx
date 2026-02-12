@@ -1,5 +1,6 @@
-import UnitOption from "../components/UnitOption";
 import { useState } from "react";
+import { pickRandomMessage } from "./genericMessages";
+import UnitOption from "../components/UnitOption";
 import styles from "./HomePage.module.css";
 import gustLogo from "/images/gust-logo.png";
 import gearIcon from "/images/icon-units.svg";
@@ -22,6 +23,7 @@ function HomePage() {
         height: "in",
       };
   const dropdownSelect = "/images/icon-checkmark.svg";
+  const genericMessages = pickRandomMessage()
 
   function toggleUnits() {
     setIsMetric((prev) => !prev);
@@ -135,7 +137,7 @@ function HomePage() {
             <div
               className={`d-flex justify-content-center align-items-center py-2 ${styles["generic-message"]}`}
             >
-              How's the sky looking today?
+              {genericMessages}
             </div>
           </div>
         </div>
