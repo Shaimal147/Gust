@@ -11,6 +11,16 @@ import overcastIcon from "../assets/icon-overcast.webp";
 
 function HomePage() {
   const [isMetric, setIsMetric] = useState(true);
+  const [selectedDay, setSelectedDay] = useState("Tuesday");
+  const days = [
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+    "Sunday",
+  ];
   const units = isMetric
     ? {
         temperature: "celsius",
@@ -23,7 +33,7 @@ function HomePage() {
         height: "in",
       };
   const dropdownSelect = "/images/icon-checkmark.svg";
-  const genericMessages = pickRandomMessage()
+  const genericMessages = pickRandomMessage();
 
   function toggleUnits() {
     setIsMetric((prev) => !prev);
@@ -67,62 +77,62 @@ function HomePage() {
                       Temperature
                     </p>
                   </li>
-                    <UnitOption
-                      label={
-                        <>
-                          Celsius ( <sup>°</sup>C )
-                        </>
-                      }
-                      selected={isMetric}
-                      onClick={() => setIsMetric(true)}
-                      iconSrc={dropdownSelect}
-                    />
-                    <UnitOption
-                      label={
-                        <>
-                          Fahrenheit ( <sup>°</sup>F )
-                        </>
-                      }
-                      selected={!isMetric}
-                      onClick={() => setIsMetric(false)}
-                      iconSrc={dropdownSelect}
-                      divider
-                    />
+                  <UnitOption
+                    label={
+                      <>
+                        Celsius ( <sup>°</sup>C )
+                      </>
+                    }
+                    selected={isMetric}
+                    onClick={() => setIsMetric(true)}
+                    iconSrc={dropdownSelect}
+                  />
+                  <UnitOption
+                    label={
+                      <>
+                        Fahrenheit ( <sup>°</sup>F )
+                      </>
+                    }
+                    selected={!isMetric}
+                    onClick={() => setIsMetric(false)}
+                    iconSrc={dropdownSelect}
+                    divider
+                  />
                   <li>
                     <p className="px-2 mb-0 mt-2" style={{ fontSize: "small" }}>
                       Wind Speed
                     </p>
                   </li>
-                    <UnitOption
-                      label={"km/h"}
-                      selected={isMetric}
-                      onClick={() => setIsMetric(true)}
-                      iconSrc={dropdownSelect}
-                    />
-                    <UnitOption
-                      label={"mph"}
-                      selected={!isMetric}
-                      onClick={() => setIsMetric(false)}
-                      iconSrc={dropdownSelect}
-                      divider
-                    />
+                  <UnitOption
+                    label={"km/h"}
+                    selected={isMetric}
+                    onClick={() => setIsMetric(true)}
+                    iconSrc={dropdownSelect}
+                  />
+                  <UnitOption
+                    label={"mph"}
+                    selected={!isMetric}
+                    onClick={() => setIsMetric(false)}
+                    iconSrc={dropdownSelect}
+                    divider
+                  />
                   <li>
                     <p className="px-2 mb-0 mt-2" style={{ fontSize: "small" }}>
                       Precipitation
                     </p>
                   </li>
-                    <UnitOption
-                      label={"mm"}
-                      selected={isMetric}
-                      onClick={() => setIsMetric(true)}
-                      iconSrc={dropdownSelect}
-                    />
-                    <UnitOption
-                      label={"in"}
-                      selected={!isMetric}
-                      onClick={() => setIsMetric(false)}
-                      iconSrc={dropdownSelect}
-                    />
+                  <UnitOption
+                    label={"mm"}
+                    selected={isMetric}
+                    onClick={() => setIsMetric(true)}
+                    iconSrc={dropdownSelect}
+                  />
+                  <UnitOption
+                    label={"in"}
+                    selected={!isMetric}
+                    onClick={() => setIsMetric(false)}
+                    iconSrc={dropdownSelect}
+                  />
                 </ul>
               </div>
             </div>
@@ -475,9 +485,37 @@ function HomePage() {
                           data-bs-toggle="dropdown"
                           aria-expanded="false"
                         >
-                          Tuesday
+                          {selectedDay}
                         </button>
-                        <ul className="dropdown-menu">...</ul>
+                        <ul
+                          className={`dropdown-menu ${styles.dropdownContainer} mt-1 p-2`}
+                        >
+                          {days.map((day) => {
+                            const isSelected = day === selectedDay;
+
+                            return (
+                              <li key={day}>
+                                <button
+                                  type="button"
+                                  onClick={() => setSelectedDay(day)}
+                                  className={`btn ${styles.button1} d-flex justify-content-between btn-sm w-100 text-start ${
+                                    isSelected ? styles.active : ""
+                                  }`}
+                                  aria-pressed={isSelected}
+                                >
+                                  <span>{day}</span>
+                                  {isSelected && (
+                                    <img
+                                      src="/images/icon-checkmark.svg"
+                                      alt="selected"
+                                      width={20}
+                                    />
+                                  )}
+                                </button>
+                              </li>
+                            );
+                          })}
+                        </ul>
                       </div>
                     </div>
                   </div>
