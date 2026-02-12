@@ -71,6 +71,42 @@
   font-size: 3.5rem;
 }
 
+.overviewWidth {
+  width: 100%;
+}
+
+@media (min-width: 992px) {
+  .overviewWidth {
+    width: 100%;
+
+  .hourlySidebar {
+    position: sticky;
+    top: 2rem;
+  }
+    
+  }
+
+   .overviewDetailsWidth {
+    width: 100%;
+   }
+
+  .overview {
+    aspect-ratio: auto;
+    height: auto;
+  }
+
+  .forecastRow {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+  }
+
+  .forecastRow > :global(.col-lg) {
+    flex: 0 0 calc(100% / 7);
+    max-width: calc(100% / 7);
+  }
+}
+
+
 .overview-title {
     font-weight: 1000;
     font-size: 1.5rem;
@@ -84,6 +120,9 @@
 .overview-details {
     background-color: hsl(243, 27%, 20%);
     color: hsl(250, 6%, 84%);
+}
+.overviewDetailsWidth {
+  width: 100%;
 }
 
 .hourly-details {
