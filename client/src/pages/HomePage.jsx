@@ -14,7 +14,7 @@ function HomePage() {
   const [isMetric, setIsMetric] = useState(true);
   const [selectedDay, setSelectedDay] = useState("Tuesday");
   const [genericMessage] = useState(pickRandomMessage())
-  const [weather, setWeather] = useState(null)
+  const [currentWeather, setCurrentWeather] = useState(null)
 
   const days = [
     "Monday",
@@ -25,18 +25,20 @@ function HomePage() {
     "Saturday",
     "Sunday",
   ];
-  const units = isMetric
+  const currentData = isMetric
     ? {
-        temperature: weather?.temperature,
-        feelsLike: weather?.feelsLike,
-        speed: `${weather?.windSpeed} km/h`,
-        height: `${weather?.precipitation} mm`,
+        temperature: currentWeather?.temperature,
+        feelsLike: currentWeather?.feelsLike,
+        speed: `${currentWeather?.windSpeed} km/h`,
+        height: `${currentWeather?.precipitation} mm`,
+        weatherCode: currentWeather?.weather
       }
     : {
-        temperature: ((weather?.temperature * 1.8) + 32).toFixed(1),
-        feelsLike: ((weather?.feelsLike) * 1.8 + 32).toFixed(1),
-        speed: `${(weather?.windSpeed * 0.621371).toFixed(0)} mph`,
-        height: `${(weather?.precipitation / 25.4).toFixed(0)} in`,
+        temperature:  ((currentWeather?.temperature * 1.8) + 32).toFixed(1),
+        feelsLike: ((currentWeather?.feelsLike) * 1.8 + 32).toFixed(1),
+        speed: `${(currentWeather?.windSpeed * 0.621371).toFixed(0)} mph`,
+        height: `${(currentWeather?.precipitation / 25.4).toFixed(0)} in`,
+        weatherCode: currentWeather?.weather
       };
   const dropdownSelect = "/images/icon-checkmark.svg";
 
@@ -44,7 +46,7 @@ function HomePage() {
     async function loadWeather() {
       try {
         const data = await getCurrentWeather(52.52, 13.41)
-        setWeather(data)
+        setCurrentWeather(data)
       }
       catch (error) {
         console.log("Failed to load data: ", error)
@@ -217,9 +219,9 @@ function HomePage() {
                         </p>
                       </div>
                       <div className="d-flex align-items-center gap-4">
-                        <img src={sunnyIcon} alt="sunny icon" width={80} />
+                        <img src={currentData.weatherCode?.icon} alt={currentData.weatherCode?.label} width={80} />
                         <p className="mb-0">
-                          {units.temperature}
+                          {currentData.temperature}
                           <sup>°</sup>
                         </p>
                       </div>
@@ -236,7 +238,7 @@ function HomePage() {
                       <div className="card-body">
                         <p className="card-text">Feels like</p>
                         <h5 className="card-title">
-                          {units.feelsLike}
+                          {currentData.feelsLike}
                           <sup>°</sup>
                         </h5>
                       </div>
@@ -248,7 +250,7 @@ function HomePage() {
                     >
                       <div className="card-body">
                         <p className="card-text">Humidity</p>
-                        <h5 className="card-title">{weather?.humidity}%</h5>
+                        <h5 className="card-title">{currentWeather?.humidity}%</h5>
                       </div>
                     </div>
                   </div>
@@ -258,7 +260,7 @@ function HomePage() {
                     >
                       <div className="card-body">
                         <p className="card-text">Wind</p>
-                        <h5 className="card-title">{units.speed}</h5>
+                        <h5 className="card-title">{currentData.speed}</h5>
                       </div>
                     </div>
                   </div>
@@ -273,7 +275,7 @@ function HomePage() {
                         >
                           Precipitation
                         </p>
-                        <h5 className="card-title">{units.height}</h5>
+                        <h5 className="card-title">{currentData.height}</h5>
                       </div>
                     </div>
                   </div>
@@ -303,11 +305,11 @@ function HomePage() {
                       </div>
                       <div className="d-flex justify-content-between w-100 px-1">
                         <p className="mb-0">
-                          {units.temperature}
+                          {currentData.temperature}
                           <sup>°</sup>
                         </p>
                         <p className="mb-0">
-                          {units.temperature}
+                          {currentData.temperature}
                           <sup>°</sup>
                         </p>
                       </div>
@@ -334,11 +336,11 @@ function HomePage() {
                       </div>
                       <div className="d-flex justify-content-between w-100 px-1">
                         <p className="mb-0">
-                          {units.temperature}
+                          {currentData.temperature}
                           <sup>°</sup>
                         </p>
                         <p className="mb-0">
-                          {units.temperature}
+                          {currentData.temperature}
                           <sup>°</sup>
                         </p>
                       </div>
@@ -365,11 +367,11 @@ function HomePage() {
                       </div>
                       <div className="d-flex justify-content-between w-100 px-1">
                         <p className="mb-0">
-                          {units.temperature}
+                          {currentData.temperature}
                           <sup>°</sup>
                         </p>
                         <p className="mb-0">
-                          {units.temperature}
+                          {currentData.temperature}
                           <sup>°</sup>
                         </p>
                       </div>
@@ -392,11 +394,11 @@ function HomePage() {
                       </div>
                       <div className="d-flex justify-content-between w-100 px-1">
                         <p className="mb-0">
-                          {units.temperature}
+                          {currentData.temperature}
                           <sup>°</sup>
                         </p>
                         <p className="mb-0">
-                          {units.temperature}
+                          {currentData.temperature}
                           <sup>°</sup>
                         </p>
                       </div>
@@ -419,11 +421,11 @@ function HomePage() {
                       </div>
                       <div className="d-flex justify-content-between w-100 px-1">
                         <p className="mb-0">
-                          {units.temperature}
+                          {currentData.temperature}
                           <sup>°</sup>
                         </p>
                         <p className="mb-0">
-                          {units.temperature}
+                          {currentData.temperature}
                           <sup>°</sup>
                         </p>
                       </div>
@@ -446,11 +448,11 @@ function HomePage() {
                       </div>
                       <div className="d-flex justify-content-between w-100 px-1">
                         <p className="mb-0">
-                          {units.temperature}
+                          {currentData.temperature}
                           <sup>°</sup>
                         </p>
                         <p className="mb-0">
-                          {units.temperature}
+                          {currentData.temperature}
                           <sup>°</sup>
                         </p>
                       </div>
@@ -473,11 +475,11 @@ function HomePage() {
                       </div>
                       <div className="d-flex justify-content-between w-100 px-1">
                         <p className="mb-0">
-                          {units.temperature}
+                          {currentData.temperature}
                           <sup>°</sup>
                         </p>
                         <p className="mb-0">
-                          {units.temperature}
+                          {currentData.temperature}
                           <sup>°</sup>
                         </p>
                       </div>
@@ -552,7 +554,7 @@ function HomePage() {
                           <p className="card-text m-0">3 PM</p>
                         </div>
                         <p className="m-0">
-                          {units.temperature}
+                          {currentData.temperature}
                           <sup>°</sup>
                         </p>
                       </div>
@@ -570,7 +572,7 @@ function HomePage() {
                           <p className="card-text m-0">3 PM</p>
                         </div>
                         <p className="m-0">
-                          {units.temperature}
+                          {currentData.temperature}
                           <sup>°</sup>
                         </p>
                       </div>
@@ -590,7 +592,7 @@ function HomePage() {
                           <p className="card-text m-0">3 PM</p>
                         </div>
                         <p className="m-0">
-                          {units.temperature}
+                          {currentData.temperature}
                           <sup>°</sup>
                         </p>
                       </div>
@@ -610,7 +612,7 @@ function HomePage() {
                           <p className="card-text m-0">3 PM</p>
                         </div>
                         <p className="m-0">
-                          {units.temperature}
+                          {currentData.temperature}
                           <sup>°</sup>
                         </p>
                       </div>
@@ -630,7 +632,7 @@ function HomePage() {
                           <p className="card-text m-0">3 PM</p>
                         </div>
                         <p className="m-0">
-                          {units.temperature}
+                          {currentData.temperature}
                           <sup>°</sup>
                         </p>
                       </div>
@@ -650,7 +652,7 @@ function HomePage() {
                           <p className="card-text m-0">3 PM</p>
                         </div>
                         <p className="m-0">
-                          {units.temperature}
+                          {currentData.temperature}
                           <sup>°</sup>
                         </p>
                       </div>
@@ -670,7 +672,7 @@ function HomePage() {
                           <p className="card-text m-0">3 PM</p>
                         </div>
                         <p className="m-0">
-                          {units.temperature}
+                          {currentData.temperature}
                           <sup>°</sup>
                         </p>
                       </div>
