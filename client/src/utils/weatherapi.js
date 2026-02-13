@@ -31,14 +31,20 @@ export async function getCurrentWeather(latitude, longitude){
         params: {
             latitude,
             longitude,
-            current: ["temperature_2m", "weather_code"]
+            current: ["temperature_2m", "weather_code", "apparent_temperature", "wind_speed_10m", "precipitation", "relative_humidity_2m"]
         }
     })
     const data = response.data
 
     const shaped = {
         temperature: data.current.temperature_2m,
-        weather: data.current.weather
+        weather: data.current.weather_code,
+        feelsLike: data.current.apparent_temperature,
+        windSpeed: data.current.wind_speed_10m,
+        precipitation: data.current.precipitation,
+        humidity: data.current.relative_humidity_2m
     }
     return shaped
 }
+
+console.log(await getCurrentWeather(52.52, 13.41))

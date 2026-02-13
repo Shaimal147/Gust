@@ -28,13 +28,15 @@ function HomePage() {
   const units = isMetric
     ? {
         temperature: weather?.temperature,
-        speed: "km/h",
-        height: "mm",
+        feelsLike: weather?.feelsLike,
+        speed: `${weather?.windSpeed} km/h`,
+        height: `${weather?.precipitation} mm`,
       }
     : {
-        temperature: "fahrenheit",
-        speed: "mph",
-        height: "in",
+        temperature: ((weather?.temperature * 1.8) + 32).toFixed(1),
+        feelsLike: ((weather?.feelsLike) * 1.8 + 32).toFixed(1),
+        speed: `${(weather?.windSpeed * 0.621371).toFixed(0)} mph`,
+        height: `${(weather?.precipitation / 25.4).toFixed(0)} in`,
       };
   const dropdownSelect = "/images/icon-checkmark.svg";
 
@@ -217,7 +219,7 @@ function HomePage() {
                       <div className="d-flex align-items-center gap-4">
                         <img src={sunnyIcon} alt="sunny icon" width={80} />
                         <p className="mb-0">
-                          {weather && units.temperature}
+                          {units.temperature}
                           <sup>°</sup>
                         </p>
                       </div>
@@ -234,7 +236,7 @@ function HomePage() {
                       <div className="card-body">
                         <p className="card-text">Feels like</p>
                         <h5 className="card-title">
-                          {units.temperature}
+                          {units.feelsLike}
                           <sup>°</sup>
                         </h5>
                       </div>
@@ -246,7 +248,7 @@ function HomePage() {
                     >
                       <div className="card-body">
                         <p className="card-text">Humidity</p>
-                        <h5 className="card-title">46%</h5>
+                        <h5 className="card-title">{weather?.humidity}%</h5>
                       </div>
                     </div>
                   </div>
