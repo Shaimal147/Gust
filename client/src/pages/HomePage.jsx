@@ -12,6 +12,7 @@ import overcastIcon from "../assets/icon-overcast.webp";
 function HomePage() {
   const [isMetric, setIsMetric] = useState(true);
   const [selectedDay, setSelectedDay] = useState("Tuesday");
+  const [genericMessage] = useState(pickRandomMessage())
   const days = [
     "Monday",
     "Tuesday",
@@ -33,7 +34,6 @@ function HomePage() {
         height: "in",
       };
   const dropdownSelect = "/images/icon-checkmark.svg";
-  const genericMessages = pickRandomMessage();
 
   function toggleUnits() {
     setIsMetric((prev) => !prev);
@@ -147,7 +147,7 @@ function HomePage() {
             <div
               className={`d-flex justify-content-center align-items-center py-2 ${styles["generic-message"]}`}
             >
-              {genericMessages}
+              {genericMessage}
             </div>
           </div>
         </div>

@@ -11,6 +11,6 @@ const genericMessages = [
 ]
 
  export function pickRandomMessage() {
-    const message = Math.floor(Math.random() * 8)
+    const message = Math.floor(Math.random() * genericMessages.length)
     return genericMessages[message]
 }

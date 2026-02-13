@@ -1,4 +1,4 @@
-import styles from '../pages/HomePage.module.css'
+import styles from './UnitOption.module.css'
 
 function UnitOption({ label, selected, onClick, iconSrc, divider = false }) {
   return (

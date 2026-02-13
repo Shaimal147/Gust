@@ -1,0 +1,19 @@
+.divider {
+  border-bottom: solid 1px hsl(243, 23%, 30%);
+}
+
+.button1 {
+  background-color: hsl(243, 27%, 20%);
+  border-color: hsl(243, 27%, 20%);
+  color: hsl(250, 6%, 84%);
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-weight: 1000;
+  white-space: nowrap;
+}
+
+.button1:hover,
+.button1:focus,
+.active {
+  background-color: hsl(243, 23%, 24%);
+  border-color: hsl(243, 23%, 24%);
+}
