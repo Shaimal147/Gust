@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState} from "react";
+import { getCurrentWeather } from "../utils/weatherapi";
 import { pickRandomMessage } from "./genericMessages";
 import UnitOption from "../components/UnitOption";
 import styles from "./HomePage.module.css";
@@ -13,6 +14,8 @@ function HomePage() {
   const [isMetric, setIsMetric] = useState(true);
   const [selectedDay, setSelectedDay] = useState("Tuesday");
   const [genericMessage] = useState(pickRandomMessage())
+  const [weather, setWeather] = useState(null)
+
   const days = [
     "Monday",
     "Tuesday",
@@ -24,7 +27,7 @@ function HomePage() {
   ];
   const units = isMetric
     ? {
-        temperature: "celsius",
+        temperature: weather?.temperature,
         speed: "km/h",
         height: "mm",
       }
@@ -34,6 +37,20 @@ function HomePage() {
         height: "in",
       };
   const dropdownSelect = "/images/icon-checkmark.svg";
+
+  useEffect(() => {
+    async function loadWeather() {
+      try {
+        const data = await getCurrentWeather(52.52, 13.41)
+        setWeather(data)
+      }
+      catch (error) {
+        console.log("Failed to load data: ", error)
+      }
+    }
+
+    loadWeather()
+  }, [])
 
   function toggleUnits() {
     setIsMetric((prev) => !prev);
@@ -200,7 +217,7 @@ function HomePage() {
                       <div className="d-flex align-items-center gap-4">
                         <img src={sunnyIcon} alt="sunny icon" width={80} />
                         <p className="mb-0">
-                          {units.temperature}
+                          {weather && units.temperature}
                           <sup>°</sup>
                         </p>
                       </div>

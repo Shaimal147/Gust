@@ -24,4 +24,21 @@ const BASE_URL = "https://api.open-meteo.com/v1/forecast"
     return shaped;
 }
 
-console.log(await fetchDailyWeather(52.52, 13.41))
+/* console.log(await fetchDailyWeather(52.52, 13.41)) */
+
+export async function getCurrentWeather(latitude, longitude){
+    const response = await axios.get(BASE_URL, {
+        params: {
+            latitude,
+            longitude,
+            current: ["temperature_2m", "weather_code"]
+        }
+    })
+    const data = response.data
+
+    const shaped = {
+        temperature: data.current.temperature_2m,
+        weather: data.current.weather
+    }
+    return shaped
+}
