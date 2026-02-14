@@ -1,4 +1,5 @@
 import axios from 'axios'
+import dayjs from 'dayjs'
 import sunnyIcon from '../assets/icon-sunny.webp'
 import stormIcon from '../assets/icon-storm.webp'
 import snowIcon from '../assets/icon-snow.webp'
@@ -146,6 +147,10 @@ const BASE_URL = "https://api.open-meteo.com/v1/forecast"
         }
  }
 
+ function dateFormatter(date) {
+    return dayjs(date).format('dddd, MMMM D, YYYY')
+ }
+
 
  export async function fetchDailyWeather(latitude, longitude) {
     const response =  await axios.get(BASE_URL, {
@@ -184,7 +189,9 @@ export async function getCurrentWeather(latitude, longitude){
         feelsLike: data.current.apparent_temperature,
         windSpeed: data.current.wind_speed_10m,
         precipitation: data.current.precipitation,
-        humidity: data.current.relative_humidity_2m
+        humidity: data.current.relative_humidity_2m,
+        time: dateFormatter(data.current.time)
     }
+    console.log(shaped)
     return shaped
 }

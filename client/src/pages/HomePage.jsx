@@ -31,14 +31,16 @@ function HomePage() {
         feelsLike: currentWeather?.feelsLike,
         speed: `${currentWeather?.windSpeed} km/h`,
         height: `${currentWeather?.precipitation} mm`,
-        weatherCode: currentWeather?.weather
+        weatherCode: currentWeather?.weather,
+        time: currentWeather?.time
       }
     : {
         temperature:  ((currentWeather?.temperature * 1.8) + 32).toFixed(1),
         feelsLike: ((currentWeather?.feelsLike) * 1.8 + 32).toFixed(1),
         speed: `${(currentWeather?.windSpeed * 0.621371).toFixed(0)} mph`,
         height: `${(currentWeather?.precipitation / 25.4).toFixed(0)} in`,
-        weatherCode: currentWeather?.weather
+        weatherCode: currentWeather?.weather,
+        time: currentWeather?.time
       };
   const dropdownSelect = "/images/icon-checkmark.svg";
 
@@ -215,7 +217,7 @@ function HomePage() {
                           Berlin, Germany
                         </p>
                         <p className={`${styles["overview-text"]}`}>
-                          Thursday, February 12, 2026
+                          {currentData.time}
                         </p>
                       </div>
                       <div className="d-flex align-items-center gap-4">
