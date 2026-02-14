@@ -8,8 +8,10 @@ import styles from "./HomePage.module.css";
 import gustLogo from "/images/gust-logo.png";
 import gearIcon from "/images/icon-units.svg";
 import searchIcon from "/images/icon-search.svg";
+import loadingIcon from "../assets/icon-loading.svg"
 
 function HomePage() {
+  const [loading, setLoading] = useState(true)
   const [isMetric, setIsMetric] = useState(true);
   const [selectedDay, setSelectedDay] = useState("");
   const [genericMessage] = useState(pickRandomMessage())
@@ -67,15 +69,17 @@ function HomePage() {
     async function loadWeather() {
       try {
         const currentData = await getCurrentWeather(52.52, 13.41)
-        setCurrentWeather(currentData)
-
         const dailyData = await fetchDailyWeather(52.52, 13.41)
-        setDailyWeather(dailyData)
-
         const hourlyData = await getHourlyWeather(52.52, 13.41)
-        setHourlyWeather(hourlyData)
+        setLoading(true)
 
+
+        setCurrentWeather(currentData)
+        setDailyWeather(dailyData)
+        setHourlyWeather(hourlyData)
         setSelectedDay(dayjs(currentData.time).format('dddd'))
+
+        setLoading(false)
       }
       catch (error) {
         console.log("Failed to load data: ", error)
@@ -242,25 +246,32 @@ function HomePage() {
               <div className="mt-0">
                 <div className="row">
                   <div className="col-12">
-                    <div
-                      className={`d-flex flex-column flex-lg-row align-items-center justify-content-center justify-content-lg-between ${styles.overview} ${styles.overviewWidth} px-lg-3 py-lg-5`}
-                    >
-                      <div>
-                        <p className={`${styles["overview-title"]}`}>
-                          Berlin, Germany
-                        </p>
-                        <p className={`${styles["overview-text"]}`}>
-                          {currentData.time}
-                        </p>
+                    {!loading ?
+                      <div
+                        className={`d-flex flex-column flex-lg-row align-items-center justify-content-center justify-content-lg-between ${styles.overview} ${styles.overviewWidth} px-lg-3 py-lg-5`}
+                      >
+                        <div>
+                          <p className={`${styles["overview-title"]}`}>
+                            Berlin, Germany
+                          </p>
+                          <p className={`${styles["overview-text"]}`}>
+                            {currentData.time}
+                          </p>
+                        </div>
+                        <div className="d-flex align-items-center gap-4">
+                          <img src={currentData.weatherCode?.icon} alt={currentData.weatherCode?.label} width={80} />
+                          <p className="mb-0">
+                            {currentData.temperature}
+                            <sup>°</sup>
+                          </p>
+                        </div>
                       </div>
-                      <div className="d-flex align-items-center gap-4">
-                        <img src={currentData.weatherCode?.icon} alt={currentData.weatherCode?.label} width={80} />
-                        <p className="mb-0">
-                          {currentData.temperature}
-                          <sup>°</sup>
-                        </p>
+                    :
+                      <div className={`d-flex flex-column justify-content-center align-items-center ${styles.overviewWidth}  ${styles.loadingOverview} px-lg-3 py-lg-5`}>
+                        <img src={loadingIcon} alt={null} width={30} />
+                        Loading
                       </div>
-                    </div>
+                    } 
                   </div>
                 </div>
               </div>
@@ -272,10 +283,16 @@ function HomePage() {
                     >
                       <div className="card-body">
                         <p className="card-text">Feels like</p>
-                        <h5 className="card-title">
-                          {currentData.feelsLike}
-                          <sup>°</sup>
-                        </h5>
+                        {!loading ? 
+                          <h5 className="card-title">
+                            {currentData.feelsLike}
+                            <sup>°</sup>
+                          </h5>
+                        :
+                          <h5 className="card-title">
+                            &mdash;
+                          </h5>
+                        }
                       </div>
                     </div>
                   </div>
@@ -285,7 +302,11 @@ function HomePage() {
                     >
                       <div className="card-body">
                         <p className="card-text">Humidity</p>
-                        <h5 className="card-title">{currentWeather?.humidity}%</h5>
+                        {!loading ?
+                          <h5 className="card-title">{currentWeather?.humidity}%</h5>
+                        :
+                          <h5 className="card-title">&mdash;</h5>
+                        } 
                       </div>
                     </div>
                   </div>
@@ -295,7 +316,11 @@ function HomePage() {
                     >
                       <div className="card-body">
                         <p className="card-text">Wind</p>
-                        <h5 className="card-title">{currentData.speed}</h5>
+                        {!loading ?
+                          <h5 className="card-title">{currentData.speed}</h5>
+                        :
+                          <h5 className="card-title">&mdash;</h5>
+                        }
                       </div>
                     </div>
                   </div>
@@ -310,7 +335,11 @@ function HomePage() {
                         >
                           Precipitation
                         </p>
-                        <h5 className="card-title">{currentData.height}</h5>
+                        {!loading ? 
+                          <h5 className="card-title">{currentData.height}</h5>
+                        :
+                          <h5 className="card-title">&mdash;</h5>
+                        }
                       </div>
                     </div>
                   </div>
@@ -321,41 +350,64 @@ function HomePage() {
                   <div className="">Daily forecast</div>
                 </div>
               </div>
-              <div
-                className={`row g-3 mt-1 mt-lg-4 ${styles.forecastRow} ${styles.overviewWidth}`}
-              >
-                {dailyData.map((day) => {
-                  return (
-                    <div className="col-4 col-lg" key={day.date}>
-                      <div
-                        className={`card  ${styles["overview-details"]} h-100 w-100`}
-                      >
-                        <div className="card-body d-flex flex-column justify-content-start align-items-center h-100 w-100 py-1 px-0">
-                          <div className="d-flex flex-column align-items-center">
-                            <p
-                              className="card-text m-0"
-                              style={{ fontSize: "small" }}
-                            >
-                              {day.date}
-                            </p>
-                            <img src={day.weatherCode?.icon} alt={day.weatherCode?.label} width={50} />
-                          </div>
-                          <div className="d-flex justify-content-between w-100 px-1">
-                            <p className="mb-0">
-                              {day.minTemperature}
-                              <sup>°</sup>
-                            </p>
-                            <p className="mb-0">
-                              {day.maxTemperature}
-                              <sup>°</sup>
-                            </p>
+              {!loading ?
+                <div
+                  className={`row g-3 mt-1 mt-lg-4 ${styles.forecastRow} ${styles.overviewWidth}`}
+                >
+                  {dailyData.map((day) => {
+                    return (
+                      <div className="col-4 col-lg" key={day.date}>
+                        <div
+                          className={`card  ${styles["overview-details"]} h-100 w-100`}
+                        >
+                          <div className="card-body d-flex flex-column justify-content-start align-items-center h-100 w-100 py-1 px-0">
+                            <div className="d-flex flex-column align-items-center">
+                              <p
+                                className="card-text m-0"
+                                style={{ fontSize: "small" }}
+                              >
+                                {day.date}
+                              </p>
+                              <img src={day.weatherCode?.icon} alt={day.weatherCode?.label} width={50} />
+                            </div>
+                            <div className="d-flex justify-content-between w-100 px-1">
+                              <p className="mb-0">
+                                {day.minTemperature}
+                                <sup>°</sup>
+                              </p>
+                              <p className="mb-0">
+                                {day.maxTemperature}
+                                <sup>°</sup>
+                              </p>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  )
-                })}
-              </div>
+                    )
+                  })}
+                </div>
+              :
+                <div
+                  className={`row g-3 mt-1 mt-lg-4 ${styles.forecastRow} ${styles.overviewWidth}`}
+                >
+                      <div className="col-4 col-lg">
+                        <div
+                          className={`card  ${styles["overview-details"]} h-100 w-100`}
+                        >
+                          <div className="card-body d-flex flex-column justify-content-start align-items-center h-100 w-100 py-1 px-0">
+                            <div className="d-flex flex-column align-items-center">
+                              <p
+                                className="card-text m-0"
+                                style={{ fontSize: "small" }}
+                              >
+                                &mdash;
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                </div>
+              }
             </div>
           </div>
 

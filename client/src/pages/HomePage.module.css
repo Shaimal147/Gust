@@ -78,13 +78,17 @@
   width: 100%;
 }
 
+.loadingOverview {
+  background-color: hsl(243, 27%, 20%);
+  border-color: hsl(243, 27%, 20%);;
+  border-radius: 20px;
+  font-weight: 1000;
+  font-size: 2rem;
+}
+
 @media (min-width: 992px) {
   .overviewWidth {
     width: 100%;
-  }
-  .hourlySidebar {
-    max-height: 65vh;
-    overflow-y: auto;
   }
 
    .overviewDetailsWidth {
@@ -107,6 +111,10 @@
   }
 }
 
+.hourlySidebar {
+    max-height: 100vh;
+    overflow-y: auto;
+  }
 
 .overview-title {
     font-weight: 1000;

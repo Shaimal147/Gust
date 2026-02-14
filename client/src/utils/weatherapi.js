@@ -128,6 +128,16 @@ const BASE_URL = "https://api.open-meteo.com/v1/forecast"
             label: "Violent rain showers",
             icon: rainIcon
         },
+        85: {
+            type: "snow",
+            label: "Slight snow showers",
+            icon: snowIcon
+        },
+        86: {
+            type: "snow",
+            label: "Heavy snow showers",
+            icon: snowIcon
+        },
         95: {
             type: "thunderstorm",
             label: "Slight or moderate",
