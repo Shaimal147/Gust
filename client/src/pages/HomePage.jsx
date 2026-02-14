@@ -1,5 +1,6 @@
 import { useEffect, useState} from "react";
 import { getCurrentWeather } from "../utils/weatherapi";
+import { fetchDailyWeather } from "../utils/weatherapi";
 import { pickRandomMessage } from "./genericMessages";
 import UnitOption from "../components/UnitOption";
 import styles from "./HomePage.module.css";
@@ -15,6 +16,7 @@ function HomePage() {
   const [selectedDay, setSelectedDay] = useState("Tuesday");
   const [genericMessage] = useState(pickRandomMessage())
   const [currentWeather, setCurrentWeather] = useState(null)
+  const [dailyWeather, setDailyWeather] = useState([])
 
   const days = [
     "Monday",
@@ -42,13 +44,28 @@ function HomePage() {
         weatherCode: currentWeather?.weather,
         time: currentWeather?.time
       };
+  const dailyData = (dailyWeather ?? []).map((day) => {
+    const minTemperature = isMetric ? day.minTemp : ((day.minTemp * 1.8) + 32).toFixed(1)
+    const maxTemperature = isMetric ? day.maxTemp : ((day.maxTemp * 1.8) + 32).toFixed(1)
+    const weatherCode = day.weatherCode
+
+    return {
+      ...day,
+      minTemperature,
+      maxTemperature,
+      weatherCode
+    }
+  })
   const dropdownSelect = "/images/icon-checkmark.svg";
 
   useEffect(() => {
     async function loadWeather() {
       try {
-        const data = await getCurrentWeather(52.52, 13.41)
-        setCurrentWeather(data)
+        const currentData = await getCurrentWeather(52.52, 13.41)
+        setCurrentWeather(currentData)
+
+        const dailyData = await fetchDailyWeather(52.52, 13.41)
+        setDailyWeather(dailyData)
       }
       catch (error) {
         console.log("Failed to load data: ", error)
@@ -291,203 +308,37 @@ function HomePage() {
               <div
                 className={`row g-3 mt-1 mt-lg-4 ${styles.forecastRow} ${styles.overviewWidth}`}
               >
-                <div className="col-4 col-lg">
-                  <div
-                    className={`card  ${styles["overview-details"]} h-100 w-100`}
-                  >
-                    <div className="card-body d-flex flex-column justify-content-start align-items-center h-100 w-100 py-1 px-0">
-                      <div className="d-flex flex-column align-items-center">
-                        <p
-                          className="card-text m-0"
-                          style={{ fontSize: "small" }}
-                        >
-                          Tue
-                        </p>
-                        <img src={rainIcon} alt="rain icon" width={50} />
-                      </div>
-                      <div className="d-flex justify-content-between w-100 px-1">
-                        <p className="mb-0">
-                          {currentData.temperature}
-                          <sup>°</sup>
-                        </p>
-                        <p className="mb-0">
-                          {currentData.temperature}
-                          <sup>°</sup>
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-4 col-lg">
-                  <div
-                    className={`card  ${styles["overview-details"]} h-100 w-100`}
-                  >
-                    <div className="card-body d-flex flex-column justify-content-start align-items-center h-100 w-100 py-1 px-0">
-                      <div className="d-flex flex-column align-items-center">
-                        <p
-                          className="card-text m-0"
-                          style={{ fontSize: "small" }}
-                        >
-                          Wed
-                        </p>
-                        <img
-                          src={overcastIcon}
-                          alt="overcast icon"
-                          width={50}
-                        />
-                      </div>
-                      <div className="d-flex justify-content-between w-100 px-1">
-                        <p className="mb-0">
-                          {currentData.temperature}
-                          <sup>°</sup>
-                        </p>
-                        <p className="mb-0">
-                          {currentData.temperature}
-                          <sup>°</sup>
-                        </p>
+                {dailyData.map((day) => {
+                  return (
+                    <div className="col-4 col-lg" key={day.date}>
+                      <div
+                        className={`card  ${styles["overview-details"]} h-100 w-100`}
+                      >
+                        <div className="card-body d-flex flex-column justify-content-start align-items-center h-100 w-100 py-1 px-0">
+                          <div className="d-flex flex-column align-items-center">
+                            <p
+                              className="card-text m-0"
+                              style={{ fontSize: "small" }}
+                            >
+                              {day.date}
+                            </p>
+                            <img src={day.weatherCode?.icon} alt={day.weatherCode?.label} width={50} />
+                          </div>
+                          <div className="d-flex justify-content-between w-100 px-1">
+                            <p className="mb-0">
+                              {day.minTemperature}
+                              <sup>°</sup>
+                            </p>
+                            <p className="mb-0">
+                              {day.maxTemperature}
+                              <sup>°</sup>
+                            </p>
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </div>
-                <div className="col-4 col-lg">
-                  <div
-                    className={`card  ${styles["overview-details"]} h-100 w-100`}
-                  >
-                    <div className="card-body d-flex flex-column justify-content-start align-items-center h-100 w-100 py-1 px-0">
-                      <div className="d-flex flex-column align-items-center">
-                        <p
-                          className="card-text m-0"
-                          style={{ fontSize: "small" }}
-                        >
-                          Thu
-                        </p>
-                        <img
-                          src={overcastIcon}
-                          alt="overcast icon"
-                          width={50}
-                        />
-                      </div>
-                      <div className="d-flex justify-content-between w-100 px-1">
-                        <p className="mb-0">
-                          {currentData.temperature}
-                          <sup>°</sup>
-                        </p>
-                        <p className="mb-0">
-                          {currentData.temperature}
-                          <sup>°</sup>
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-4 col-lg">
-                  <div
-                    className={`card  ${styles["overview-details"]} h-100 w-100`}
-                  >
-                    <div className="card-body d-flex flex-column justify-content-start align-items-center h-100 w-100 py-1 px-0">
-                      <div className="d-flex flex-column align-items-center">
-                        <p
-                          className="card-text m-0"
-                          style={{ fontSize: "small" }}
-                        >
-                          Fri
-                        </p>
-                        <img src={rainIcon} alt="rain icon" width={50} />
-                      </div>
-                      <div className="d-flex justify-content-between w-100 px-1">
-                        <p className="mb-0">
-                          {currentData.temperature}
-                          <sup>°</sup>
-                        </p>
-                        <p className="mb-0">
-                          {currentData.temperature}
-                          <sup>°</sup>
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-4 col-lg">
-                  <div
-                    className={`card  ${styles["overview-details"]} h-100 w-100`}
-                  >
-                    <div className="card-body d-flex flex-column justify-content-start align-items-center h-100 w-100 py-1 px-0">
-                      <div className="d-flex flex-column align-items-center">
-                        <p
-                          className="card-text m-0"
-                          style={{ fontSize: "small" }}
-                        >
-                          Sat
-                        </p>
-                        <img src={rainIcon} alt="rain icon" width={50} />
-                      </div>
-                      <div className="d-flex justify-content-between w-100 px-1">
-                        <p className="mb-0">
-                          {currentData.temperature}
-                          <sup>°</sup>
-                        </p>
-                        <p className="mb-0">
-                          {currentData.temperature}
-                          <sup>°</sup>
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-4 col-lg">
-                  <div
-                    className={`card  ${styles["overview-details"]} h-100 w-100`}
-                  >
-                    <div className="card-body d-flex flex-column justify-content-start align-items-center h-100 w-100 py-1 px-0">
-                      <div className="d-flex flex-column align-items-center">
-                        <p
-                          className="card-text m-0"
-                          style={{ fontSize: "small" }}
-                        >
-                          Sun
-                        </p>
-                        <img src={rainIcon} alt="rain icon" width={50} />
-                      </div>
-                      <div className="d-flex justify-content-between w-100 px-1">
-                        <p className="mb-0">
-                          {currentData.temperature}
-                          <sup>°</sup>
-                        </p>
-                        <p className="mb-0">
-                          {currentData.temperature}
-                          <sup>°</sup>
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-4 col-lg">
-                  <div
-                    className={`card  ${styles["overview-details"]} h-100 w-100`}
-                  >
-                    <div className="card-body d-flex flex-column justify-content-start align-items-center h-100 w-100 py-1 px-0">
-                      <div className="d-flex flex-column align-items-center">
-                        <p
-                          className="card-text m-0"
-                          style={{ fontSize: "small" }}
-                        >
-                          Mon
-                        </p>
-                        <img src={rainIcon} alt="rain icon" width={50} />
-                      </div>
-                      <div className="d-flex justify-content-between w-100 px-1">
-                        <p className="mb-0">
-                          {currentData.temperature}
-                          <sup>°</sup>
-                        </p>
-                        <p className="mb-0">
-                          {currentData.temperature}
-                          <sup>°</sup>
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                  )
+                })}
               </div>
             </div>
           </div>

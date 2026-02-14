@@ -164,12 +164,13 @@ const BASE_URL = "https://api.open-meteo.com/v1/forecast"
     const data = response.data
 
     const shaped = data.daily.time.map((date, index) => ({
-            date,
+            date: dayjs(date).format("ddd"),
             maxTemp: data.daily.temperature_2m_max[index],
             minTemp: data.daily.temperature_2m_min[index],
-            weatherCode: data.daily.weather_code[index] 
+            weatherCode: mapWeatherCode(data.daily.weather_code[index]) 
         })); 
-        
+    
+    console.log(shaped)
     return shaped;
 }
 
@@ -192,6 +193,5 @@ export async function getCurrentWeather(latitude, longitude){
         humidity: data.current.relative_humidity_2m,
         time: dateFormatter(data.current.time)
     }
-    console.log(shaped)
     return shaped
 }
