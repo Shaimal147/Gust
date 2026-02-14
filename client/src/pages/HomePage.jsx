@@ -363,7 +363,7 @@ function HomePage() {
             <div className={styles.hourlySidebar}>
               <div className="row">
                 <div className="col-12">
-                  <div className={`card  ${styles["hourly-details"]} w-100`}>
+                  <div className={`card ${styles["hourly-details"]} w-100`}>
                     <div className="card-body d-flex align-items-center justify-content-between">
                       <p className={`${styles["hourly-details"]} mb-0`}>
                         Hourly forecast

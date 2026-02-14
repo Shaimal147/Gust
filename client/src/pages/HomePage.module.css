@@ -83,8 +83,8 @@
     width: 100%;
   }
   .hourlySidebar {
-    position: sticky;
-    top: 2rem;
+    max-height: 65vh;
+    overflow-y: auto;
   }
 
    .overviewDetailsWidth {
