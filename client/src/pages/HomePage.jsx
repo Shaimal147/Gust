@@ -1,5 +1,6 @@
 import { useEffect, useState} from "react";
-import { getCurrentWeather } from "../utils/weatherapi";
+import dayjs from 'dayjs'
+import { getCurrentWeather, getHourlyWeather } from "../utils/weatherapi";
 import { fetchDailyWeather } from "../utils/weatherapi";
 import { pickRandomMessage } from "./genericMessages";
 import UnitOption from "../components/UnitOption";
@@ -7,16 +8,14 @@ import styles from "./HomePage.module.css";
 import gustLogo from "/images/gust-logo.png";
 import gearIcon from "/images/icon-units.svg";
 import searchIcon from "/images/icon-search.svg";
-import sunnyIcon from "../assets/icon-sunny.webp";
-import rainIcon from "../assets/icon-rain.webp";
-import overcastIcon from "../assets/icon-overcast.webp";
 
 function HomePage() {
   const [isMetric, setIsMetric] = useState(true);
-  const [selectedDay, setSelectedDay] = useState("Tuesday");
+  const [selectedDay, setSelectedDay] = useState("");
   const [genericMessage] = useState(pickRandomMessage())
   const [currentWeather, setCurrentWeather] = useState(null)
   const [dailyWeather, setDailyWeather] = useState([])
+  const [hourlyWeather, setHourlyWeather] = useState([])
 
   const days = [
     "Monday",
@@ -47,13 +46,19 @@ function HomePage() {
   const dailyData = (dailyWeather ?? []).map((day) => {
     const minTemperature = isMetric ? day.minTemp : ((day.minTemp * 1.8) + 32).toFixed(1)
     const maxTemperature = isMetric ? day.maxTemp : ((day.maxTemp * 1.8) + 32).toFixed(1)
-    const weatherCode = day.weatherCode
 
     return {
       ...day,
       minTemperature,
       maxTemperature,
-      weatherCode
+    }
+  })
+  const hourlyData = (hourlyWeather ?? []).map((hour) => {
+    const temperature = isMetric ? hour.hourlyTemp : ((hour.hourlyTemp * 1.8) + 32).toFixed(1)
+
+    return {
+      ...hour,
+      temperature
     }
   })
   const dropdownSelect = "/images/icon-checkmark.svg";
@@ -66,6 +71,11 @@ function HomePage() {
 
         const dailyData = await fetchDailyWeather(52.52, 13.41)
         setDailyWeather(dailyData)
+
+        const hourlyData = await getHourlyWeather(52.52, 13.41)
+        setHourlyWeather(hourlyData)
+
+        setSelectedDay(dayjs(currentData.time).format('dddd'))
       }
       catch (error) {
         console.log("Failed to load data: ", error)
@@ -78,6 +88,12 @@ function HomePage() {
   function toggleUnits() {
     setIsMetric((prev) => !prev);
   }
+
+  const hoursForSelectedDay = hourlyData.filter((h) => {
+    return (
+      h.day === selectedDay
+    )
+  })
 
   return (
     <>
@@ -394,144 +410,30 @@ function HomePage() {
                     </div>
                   </div>
                 </div>
-                <div className="col-12">
-                  <div
-                    className={`card  ${styles["overview-details"]} mt-3 w-100`}
-                  >
-                    <div className="card-body">
+                {hoursForSelectedDay.map((hour) => {
+                  return (
+                    <div className="col-12" key={hour.date}>
                       <div
-                        className={`${styles["hourly-details-2"]} d-flex align-items-center justify-content-between`}
+                        className={`card  ${styles["overview-details"]} mt-3 w-100`}
                       >
-                        <div className="d-flex align-items-center">
-                          <img src={sunnyIcon} alt="sunny icon" width={50} />
-                          <p className="card-text m-0">3 PM</p>
+                        <div className="card-body">
+                          <div
+                            className={`${styles["hourly-details-2"]} d-flex align-items-center justify-content-between`}
+                          >
+                            <div className="d-flex align-items-center">
+                              <img src={hour.hourlyWeatherCode.icon} alt={hour.hourlyWeatherCode.icon} width={50} />
+                              <p className="card-text m-0">{hour.hour}</p>
+                            </div>
+                            <p className="m-0">
+                              {hour.temperature}
+                              <sup>°</sup>
+                            </p>
+                          </div>
                         </div>
-                        <p className="m-0">
-                          {currentData.temperature}
-                          <sup>°</sup>
-                        </p>
                       </div>
                     </div>
-                  </div>
-                </div>
-                <div className="col-12">
-                  <div className={`card  ${styles["overview-details"]} mt-3`}>
-                    <div className="card-body">
-                      <div
-                        className={`${styles["hourly-details-2"]} d-flex align-items-center justify-content-between`}
-                      >
-                        <div className="d-flex align-items-center">
-                          <img src={sunnyIcon} alt="sunny icon" width={50} />
-                          <p className="card-text m-0">3 PM</p>
-                        </div>
-                        <p className="m-0">
-                          {currentData.temperature}
-                          <sup>°</sup>
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-12">
-                  <div
-                    className={`card  ${styles["overview-details"]} mt-3 w-100`}
-                  >
-                    <div className="card-body">
-                      <div
-                        className={`${styles["hourly-details-2"]} d-flex align-items-center justify-content-between`}
-                      >
-                        <div className="d-flex align-items-center">
-                          <img src={sunnyIcon} alt="sunny icon" width={50} />
-                          <p className="card-text m-0">3 PM</p>
-                        </div>
-                        <p className="m-0">
-                          {currentData.temperature}
-                          <sup>°</sup>
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-12">
-                  <div
-                    className={`card  ${styles["overview-details"]} mt-3 w-100`}
-                  >
-                    <div className="card-body">
-                      <div
-                        className={`${styles["hourly-details-2"]} d-flex align-items-center justify-content-between`}
-                      >
-                        <div className="d-flex align-items-center">
-                          <img src={sunnyIcon} alt="sunny icon" width={50} />
-                          <p className="card-text m-0">3 PM</p>
-                        </div>
-                        <p className="m-0">
-                          {currentData.temperature}
-                          <sup>°</sup>
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-12">
-                  <div
-                    className={`card  ${styles["overview-details"]} mt-3 w-100`}
-                  >
-                    <div className="card-body">
-                      <div
-                        className={`${styles["hourly-details-2"]} d-flex align-items-center justify-content-between`}
-                      >
-                        <div className="d-flex align-items-center">
-                          <img src={sunnyIcon} alt="sunny icon" width={50} />
-                          <p className="card-text m-0">3 PM</p>
-                        </div>
-                        <p className="m-0">
-                          {currentData.temperature}
-                          <sup>°</sup>
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-12">
-                  <div
-                    className={`card  ${styles["overview-details"]} mt-3 w-100`}
-                  >
-                    <div className="card-body">
-                      <div
-                        className={`${styles["hourly-details-2"]} d-flex align-items-center justify-content-between`}
-                      >
-                        <div className="d-flex align-items-center">
-                          <img src={sunnyIcon} alt="sunny icon" width={50} />
-                          <p className="card-text m-0">3 PM</p>
-                        </div>
-                        <p className="m-0">
-                          {currentData.temperature}
-                          <sup>°</sup>
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-12">
-                  <div
-                    className={`card  ${styles["overview-details"]} mt-3 mb-3 w-100`}
-                  >
-                    <div className="card-body">
-                      <div
-                        className={`${styles["hourly-details-2"]} d-flex align-items-center justify-content-between`}
-                      >
-                        <div className="d-flex align-items-center">
-                          <img src={sunnyIcon} alt="sunny icon" width={50} />
-                          <p className="card-text m-0">3 PM</p>
-                        </div>
-                        <p className="m-0">
-                          {currentData.temperature}
-                          <sup>°</sup>
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                  )
+                })}
               </div>
             </div>
           </div>

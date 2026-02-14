@@ -147,7 +147,7 @@ const BASE_URL = "https://api.open-meteo.com/v1/forecast"
         }
  }
 
- function dateFormatter(date) {
+ function longDateFormatter(date) {
     return dayjs(date).format('dddd, MMMM D, YYYY')
  }
 
@@ -170,7 +170,6 @@ const BASE_URL = "https://api.open-meteo.com/v1/forecast"
             weatherCode: mapWeatherCode(data.daily.weather_code[index]) 
         })); 
     
-    console.log(shaped)
     return shaped;
 }
 
@@ -191,7 +190,28 @@ export async function getCurrentWeather(latitude, longitude){
         windSpeed: data.current.wind_speed_10m,
         precipitation: data.current.precipitation,
         humidity: data.current.relative_humidity_2m,
-        time: dateFormatter(data.current.time)
+        time: longDateFormatter(data.current.time)
     }
+    return shaped
+}
+
+export  async function getHourlyWeather(latitude, longitude) {
+    const response = await axios.get(BASE_URL, {
+        params: {
+            latitude,
+            longitude,
+            hourly: ["temperature_2m", "weather_code"]
+        }
+    })
+    const data = response.data
+
+    const shaped = data.hourly.time.map((time, index) => ({
+        date: time,
+        day: dayjs(time).format('dddd'),
+        hour: dayjs(time).format('h A'),
+        hourlyTemp: data.hourly.temperature_2m[index],
+        hourlyWeatherCode: mapWeatherCode(data.hourly.weather_code[index])
+    }))
+
     return shaped
 }
