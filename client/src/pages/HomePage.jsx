@@ -3,6 +3,7 @@ import dayjs from 'dayjs'
 import { getCurrentWeather, getHourlyWeather } from "../utils/weatherapi";
 import { fetchDailyWeather } from "../utils/weatherapi";
 import { pickRandomMessage } from "./genericMessages";
+import { getGeoCode } from "../utils/geocodeapi";
 import UnitOption from "../components/UnitOption";
 import styles from "./HomePage.module.css";
 import gustLogo from "/images/gust-logo.png";
@@ -14,6 +15,7 @@ function HomePage() {
   const [loading, setLoading] = useState(true)
   const [isMetric, setIsMetric] = useState(true);
   const [selectedDay, setSelectedDay] = useState("");
+  const [searchText, setSearchText] = useState("")
   const [genericMessage] = useState(pickRandomMessage())
   const [currentWeather, setCurrentWeather] = useState(null)
   const [dailyWeather, setDailyWeather] = useState([])
@@ -64,6 +66,11 @@ function HomePage() {
     }
   })
   const dropdownSelect = "/images/icon-checkmark.svg";
+  const hoursForSelectedDay = hourlyData.filter((h) => {
+    return (
+      h.day === selectedDay
+    )
+  })
 
   useEffect(() => {
     async function loadWeather() {
@@ -93,11 +100,11 @@ function HomePage() {
     setIsMetric((prev) => !prev);
   }
 
-  const hoursForSelectedDay = hourlyData.filter((h) => {
-    return (
-      h.day === selectedDay
-    )
-  })
+  async function sendQuery() {
+    if (!searchText.trim()) return
+    const response = await getGeoCode(searchText)
+    console.log(response)
+  }
 
   return (
     <>
@@ -225,6 +232,7 @@ function HomePage() {
                   type="text"
                   className={`form-control ${styles.searchInput}`}
                   placeholder="Search for a place..."
+                  onChange={(e) => (setSearchText(e.target.value))}
                 />
               </div>
             </form>
@@ -232,6 +240,7 @@ function HomePage() {
               type="button"
               className={`btn ${styles.button2} w-100`}
               style={{ flexBasis: "20%" }}
+              onClick={sendQuery}
             >
               Search
             </button>

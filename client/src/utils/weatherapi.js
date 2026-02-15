@@ -179,7 +179,7 @@ const BASE_URL = "https://api.open-meteo.com/v1/forecast"
             minTemp: data.daily.temperature_2m_min[index],
             weatherCode: mapWeatherCode(data.daily.weather_code[index]) 
         })); 
-    
+        
     return shaped;
 }
 
