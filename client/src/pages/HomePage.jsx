@@ -81,10 +81,10 @@ function HomePage() {
   useEffect(() => {
     async function loadWeather() {
       try {
+        setLoading(true)
         const currentData = await getCurrentWeather(52.52, 13.41);
         const dailyData = await fetchDailyWeather(52.52, 13.41);
         const hourlyData = await getHourlyWeather(52.52, 13.41);
-        setLoading(true);
 
         setCurrentWeather(currentData);
         setDailyWeather(dailyData);
@@ -115,11 +115,11 @@ function HomePage() {
     setGeoCandidates([])
     setSearchText("")
 
+    setLoading(true)
     const {latitude, longitude} = place
     const current = await getCurrentWeather(latitude, longitude)
     const daily = await fetchDailyWeather(latitude, longitude)
     const hourly = await getHourlyWeather(latitude, longitude)
-    setLoading(true)
 
     setCurrentWeather(current)
     setDailyWeather(daily)
@@ -253,6 +253,7 @@ function HomePage() {
                   type="text"
                   className={`form-control ${styles.searchInput}`}
                   placeholder="Search for a place..."
+                  value={searchText}
                   onChange={(e) => setSearchText(e.target.value)}
                 />
               </div>
