@@ -1,5 +1,5 @@
-import { useEffect, useState} from "react";
-import dayjs from 'dayjs'
+import { useEffect, useState } from "react";
+import dayjs from "dayjs";
 import { getCurrentWeather, getHourlyWeather } from "../utils/weatherapi";
 import { fetchDailyWeather } from "../utils/weatherapi";
 import { pickRandomMessage } from "./genericMessages";
@@ -9,17 +9,19 @@ import styles from "./HomePage.module.css";
 import gustLogo from "/images/gust-logo.png";
 import gearIcon from "/images/icon-units.svg";
 import searchIcon from "/images/icon-search.svg";
-import loadingIcon from "../assets/icon-loading.svg"
+import loadingIcon from "../assets/icon-loading.svg";
 
 function HomePage() {
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(true);
   const [isMetric, setIsMetric] = useState(true);
   const [selectedDay, setSelectedDay] = useState("");
-  const [searchText, setSearchText] = useState("")
-  const [genericMessage] = useState(pickRandomMessage())
-  const [currentWeather, setCurrentWeather] = useState(null)
-  const [dailyWeather, setDailyWeather] = useState([])
-  const [hourlyWeather, setHourlyWeather] = useState([])
+  const [searchText, setSearchText] = useState("");
+  const [geoCandidates, setGeoCandidates] = useState([]);
+  const [selectedLocation, setSelectedLocation] = useState(null) 
+  const [genericMessage] = useState(pickRandomMessage());
+  const [currentWeather, setCurrentWeather] = useState(null);
+  const [dailyWeather, setDailyWeather] = useState([]);
+  const [hourlyWeather, setHourlyWeather] = useState([]);
 
   const days = [
     "Monday",
@@ -37,73 +39,92 @@ function HomePage() {
         speed: `${currentWeather?.windSpeed} km/h`,
         height: `${currentWeather?.precipitation} mm`,
         weatherCode: currentWeather?.weather,
-        time: currentWeather?.time
+        time: currentWeather?.time,
       }
     : {
-        temperature:  ((currentWeather?.temperature * 1.8) + 32).toFixed(1),
-        feelsLike: ((currentWeather?.feelsLike) * 1.8 + 32).toFixed(1),
+        temperature: (currentWeather?.temperature * 1.8 + 32).toFixed(1),
+        feelsLike: (currentWeather?.feelsLike * 1.8 + 32).toFixed(1),
         speed: `${(currentWeather?.windSpeed * 0.621371).toFixed(0)} mph`,
         height: `${(currentWeather?.precipitation / 25.4).toFixed(0)} in`,
         weatherCode: currentWeather?.weather,
-        time: currentWeather?.time
+        time: currentWeather?.time,
       };
   const dailyData = (dailyWeather ?? []).map((day) => {
-    const minTemperature = isMetric ? day.minTemp : ((day.minTemp * 1.8) + 32).toFixed(1)
-    const maxTemperature = isMetric ? day.maxTemp : ((day.maxTemp * 1.8) + 32).toFixed(1)
+    const minTemperature = isMetric
+      ? day.minTemp
+      : (day.minTemp * 1.8 + 32).toFixed(1);
+    const maxTemperature = isMetric
+      ? day.maxTemp
+      : (day.maxTemp * 1.8 + 32).toFixed(1);
 
     return {
       ...day,
       minTemperature,
       maxTemperature,
-    }
-  })
+    };
+  });
   const hourlyData = (hourlyWeather ?? []).map((hour) => {
-    const temperature = isMetric ? hour.hourlyTemp : ((hour.hourlyTemp * 1.8) + 32).toFixed(1)
+    const temperature = isMetric
+      ? hour.hourlyTemp
+      : (hour.hourlyTemp * 1.8 + 32).toFixed(1);
 
     return {
       ...hour,
-      temperature
-    }
-  })
+      temperature,
+    };
+  });
   const dropdownSelect = "/images/icon-checkmark.svg";
   const hoursForSelectedDay = hourlyData.filter((h) => {
-    return (
-      h.day === selectedDay
-    )
-  })
+    return h.day === selectedDay;
+  });
 
   useEffect(() => {
     async function loadWeather() {
       try {
-        const currentData = await getCurrentWeather(52.52, 13.41)
-        const dailyData = await fetchDailyWeather(52.52, 13.41)
-        const hourlyData = await getHourlyWeather(52.52, 13.41)
-        setLoading(true)
+        const currentData = await getCurrentWeather(52.52, 13.41);
+        const dailyData = await fetchDailyWeather(52.52, 13.41);
+        const hourlyData = await getHourlyWeather(52.52, 13.41);
+        setLoading(true);
 
+        setCurrentWeather(currentData);
+        setDailyWeather(dailyData);
+        setHourlyWeather(hourlyData);
+        setSelectedDay(dayjs(currentData.time).format("dddd"));
 
-        setCurrentWeather(currentData)
-        setDailyWeather(dailyData)
-        setHourlyWeather(hourlyData)
-        setSelectedDay(dayjs(currentData.time).format('dddd'))
-
-        setLoading(false)
-      }
-      catch (error) {
-        console.log("Failed to load data: ", error)
+        setLoading(false);
+      } catch (error) {
+        console.log("Failed to load data: ", error);
       }
     }
 
-    loadWeather()
-  }, [])
+    loadWeather();
+  }, []);
 
   function toggleUnits() {
     setIsMetric((prev) => !prev);
   }
 
   async function sendQuery() {
-    if (!searchText.trim()) return
-    const response = await getGeoCode(searchText)
-    console.log(response)
+    if (!searchText.trim()) return;
+    const response = await getGeoCode(searchText);
+    setGeoCandidates(response);
+  }
+
+  async function getLocationWeather(place) {
+    setSelectedLocation(place)
+    setGeoCandidates([])
+    setSearchText("")
+
+    const {latitude, longitude} = place
+    const current = await getCurrentWeather(latitude, longitude)
+    const daily = await fetchDailyWeather(latitude, longitude)
+    const hourly = await getHourlyWeather(latitude, longitude)
+    setLoading(true)
+
+    setCurrentWeather(current)
+    setDailyWeather(daily)
+    setHourlyWeather(hourly)
+    setLoading(false)
   }
 
   return (
@@ -232,7 +253,7 @@ function HomePage() {
                   type="text"
                   className={`form-control ${styles.searchInput}`}
                   placeholder="Search for a place..."
-                  onChange={(e) => (setSearchText(e.target.value))}
+                  onChange={(e) => setSearchText(e.target.value)}
                 />
               </div>
             </form>
@@ -245,6 +266,28 @@ function HomePage() {
               Search
             </button>
           </div>
+          {geoCandidates.length > 0 ?
+            geoCandidates.map((place) => {
+              return (
+                <div
+                  className={`card  ${styles["overview-details"]} w-100 h-100 mt-2`}
+                  key={place.id}
+                >
+                  <div className="card-body">
+                    <button
+                      type="button"
+                      onClick={() => getLocationWeather(place)}
+                      className={`btn ${styles.button1} d-flex justify-content-between btn-sm w-100 text-start`}
+                    >
+                      {place.label}
+                    </button>
+                  </div>
+                </div>
+              )
+            })
+          :
+            <></>
+          }
         </div>
       </div>
 
@@ -255,32 +298,38 @@ function HomePage() {
               <div className="mt-0">
                 <div className="row">
                   <div className="col-12">
-                    {!loading ?
+                    {!loading ? (
                       <div
                         className={`d-flex flex-column flex-lg-row align-items-center justify-content-center justify-content-lg-between ${styles.overview} ${styles.overviewWidth} px-lg-3 py-lg-5`}
                       >
                         <div>
                           <p className={`${styles["overview-title"]}`}>
-                            Berlin, Germany
+                            {selectedLocation?.label}
                           </p>
                           <p className={`${styles["overview-text"]}`}>
                             {currentData.time}
                           </p>
                         </div>
                         <div className="d-flex align-items-center gap-4">
-                          <img src={currentData.weatherCode?.icon} alt={currentData.weatherCode?.label} width={80} />
+                          <img
+                            src={currentData.weatherCode?.icon}
+                            alt={currentData.weatherCode?.label}
+                            width={80}
+                          />
                           <p className="mb-0">
                             {currentData.temperature}
                             <sup>°</sup>
                           </p>
                         </div>
                       </div>
-                    :
-                      <div className={`d-flex flex-column justify-content-center align-items-center ${styles.overviewWidth}  ${styles.loadingOverview} px-lg-3 py-lg-5`}>
+                    ) : (
+                      <div
+                        className={`d-flex flex-column justify-content-center align-items-center ${styles.overviewWidth}  ${styles.loadingOverview} px-lg-3 py-lg-5`}
+                      >
                         <img src={loadingIcon} alt={null} width={30} />
                         Loading
                       </div>
-                    } 
+                    )}
                   </div>
                 </div>
               </div>
@@ -292,16 +341,14 @@ function HomePage() {
                     >
                       <div className="card-body">
                         <p className="card-text">Feels like</p>
-                        {!loading ? 
+                        {!loading ? (
                           <h5 className="card-title">
                             {currentData.feelsLike}
                             <sup>°</sup>
                           </h5>
-                        :
-                          <h5 className="card-title">
-                            &mdash;
-                          </h5>
-                        }
+                        ) : (
+                          <h5 className="card-title">&mdash;</h5>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -311,11 +358,13 @@ function HomePage() {
                     >
                       <div className="card-body">
                         <p className="card-text">Humidity</p>
-                        {!loading ?
-                          <h5 className="card-title">{currentWeather?.humidity}%</h5>
-                        :
+                        {!loading ? (
+                          <h5 className="card-title">
+                            {currentWeather?.humidity}%
+                          </h5>
+                        ) : (
                           <h5 className="card-title">&mdash;</h5>
-                        } 
+                        )}
                       </div>
                     </div>
                   </div>
@@ -325,11 +374,11 @@ function HomePage() {
                     >
                       <div className="card-body">
                         <p className="card-text">Wind</p>
-                        {!loading ?
+                        {!loading ? (
                           <h5 className="card-title">{currentData.speed}</h5>
-                        :
+                        ) : (
                           <h5 className="card-title">&mdash;</h5>
-                        }
+                        )}
                       </div>
                     </div>
                   </div>
@@ -344,11 +393,11 @@ function HomePage() {
                         >
                           Precipitation
                         </p>
-                        {!loading ? 
+                        {!loading ? (
                           <h5 className="card-title">{currentData.height}</h5>
-                        :
+                        ) : (
                           <h5 className="card-title">&mdash;</h5>
-                        }
+                        )}
                       </div>
                     </div>
                   </div>
@@ -359,7 +408,7 @@ function HomePage() {
                   <div className="">Daily forecast</div>
                 </div>
               </div>
-              {!loading ?
+              {!loading ? (
                 <div
                   className={`row g-3 mt-1 mt-lg-4 ${styles.forecastRow} ${styles.overviewWidth}`}
                 >
@@ -377,7 +426,11 @@ function HomePage() {
                               >
                                 {day.date}
                               </p>
-                              <img src={day.weatherCode?.icon} alt={day.weatherCode?.label} width={50} />
+                              <img
+                                src={day.weatherCode?.icon}
+                                alt={day.weatherCode?.label}
+                                width={50}
+                              />
                             </div>
                             <div className="d-flex justify-content-between w-100 px-1">
                               <p className="mb-0">
@@ -392,31 +445,31 @@ function HomePage() {
                           </div>
                         </div>
                       </div>
-                    )
+                    );
                   })}
                 </div>
-              :
+              ) : (
                 <div
                   className={`row g-3 mt-1 mt-lg-4 ${styles.forecastRow} ${styles.overviewWidth}`}
                 >
-                      <div className="col-4 col-lg">
-                        <div
-                          className={`card  ${styles["overview-details"]} h-100 w-100`}
-                        >
-                          <div className="card-body d-flex flex-column justify-content-start align-items-center h-100 w-100 py-1 px-0">
-                            <div className="d-flex flex-column align-items-center">
-                              <p
-                                className="card-text m-0"
-                                style={{ fontSize: "small" }}
-                              >
-                                &mdash;
-                              </p>
-                            </div>
-                          </div>
+                  <div className="col-4 col-lg">
+                    <div
+                      className={`card  ${styles["overview-details"]} h-100 w-100`}
+                    >
+                      <div className="card-body d-flex flex-column justify-content-start align-items-center h-100 w-100 py-1 px-0">
+                        <div className="d-flex flex-column align-items-center">
+                          <p
+                            className="card-text m-0"
+                            style={{ fontSize: "small" }}
+                          >
+                            &mdash;
+                          </p>
                         </div>
                       </div>
+                    </div>
+                  </div>
                 </div>
-              }
+              )}
             </div>
           </div>
 
@@ -482,7 +535,11 @@ function HomePage() {
                             className={`${styles["hourly-details-2"]} d-flex align-items-center justify-content-between`}
                           >
                             <div className="d-flex align-items-center">
-                              <img src={hour.hourlyWeatherCode.icon} alt={hour.hourlyWeatherCode.icon} width={50} />
+                              <img
+                                src={hour.hourlyWeatherCode.icon}
+                                alt={hour.hourlyWeatherCode.icon}
+                                width={50}
+                              />
                               <p className="card-text m-0">{hour.hour}</p>
                             </div>
                             <p className="m-0">
@@ -493,7 +550,7 @@ function HomePage() {
                         </div>
                       </div>
                     </div>
-                  )
+                  );
                 })}
               </div>
             </div>
